@@ -1233,3 +1233,40 @@ h2 {
     border-color: var(--gris);
     color: var(--brun);
 }
+/* sidebar */
+.sidebar {
+    width: var(--sidebar-w);
+    background-color: var(--brun);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    position: fixed;
+    top: 0;
+    left: 0; /* visible par defaut sur desktop */
+    height: 100vh;
+    z-index: 100;
+    transition: left 0.3s ease; /* animation de glissement */
+    box-shadow: 4px 0 20px rgba(44,26,14,0.15);
+}
+
+/* bouton burger */
+#burger {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--brun);
+    margin-right: 1rem;
+    padding: 0.3rem 0.6rem;
+    transition: var(--transition);
+}
+
+#burger:hover { color: var(--terre); }
+
+@media (max-width: 768px) {
+    .sidebar {
+        left: -260px; /* cachee par defaut sur mobile */
+    }
+    .main-wrapper { margin-left: 0; }
+    .site-footer  { margin-left: 0; }
+}

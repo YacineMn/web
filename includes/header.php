@@ -18,9 +18,9 @@ $base = "/web/";
 <div class="layout">
 
     <!-- sidebar gauche -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-logo">
-            <a href="index.php">TasteLab</a>
+            <a href="<?= $base ?>index.php">TasteLab</a>
         </div>
         <nav class="sidebar-nav">
             <a href="<?= $base ?>index.php" class="sidebar-link">Accueil</a>
@@ -28,12 +28,13 @@ $base = "/web/";
         </nav>
     </aside>
 
-    <div class="main-wrapper">
+    <div class="main-wrapper" id="main-wrapper">
         <header class="site-header">
-              <!-- bouton burger pour mobile -->
-                <button class="burger">☰</button>
-            <!-- barre de recherche commune a toutes les pages -->
-          <form action="<?= $base ?>recettes.php" method="GET" class="header-search">
+
+            <!-- bouton burger -->
+            <button id="burger" onclick="toggleSidebar()">☰</button>
+
+            <form action="<?= $base ?>recettes.php" method="GET" class="header-search">
                 <input type="text" name="titre"
                     placeholder="Rechercher une recette..."
                     value="<?= isset($_GET['titre']) ? htmlspecialchars($_GET['titre']) : '' ?>"
@@ -41,13 +42,12 @@ $base = "/web/";
                 <button type="submit">Rechercher</button>
             </form>
 
-            <!-- lien connexion ou deconnexion selon la session -->
             <div class="header-admin">
                 <?php if($admin): ?>
                     <a href="<?= $base ?>admin.php" class="btn-admin">Administration</a>
                     <a href="<?= $base ?>logout.php" class="btn-logout">Déconnexion</a>
                 <?php else: ?>
-                   <a href="<?= $base ?>login.php" class="btn-login">Connexion admin</a>
+                    <a href="<?= $base ?>login.php" class="btn-login">Connexion admin</a>
                 <?php endif; ?>
             </div>
 
