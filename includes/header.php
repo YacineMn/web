@@ -30,9 +30,10 @@ $base = "/web/";
 
     <div class="main-wrapper">
         <header class="site-header">
-
+              <!-- bouton burger pour mobile -->
+                <button class="burger">☰</button>
             <!-- barre de recherche commune a toutes les pages -->
-            <form action="recettes.php" method="GET" class="header-search">
+          <form action="<?= $base ?>recettes.php" method="GET" class="header-search">
                 <input type="text" name="titre"
                     placeholder="Rechercher une recette..."
                     value="<?= isset($_GET['titre']) ? htmlspecialchars($_GET['titre']) : '' ?>"

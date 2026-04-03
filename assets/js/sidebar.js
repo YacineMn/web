@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function(){
             burger.style.display = "none";
             if(sidebar) sidebar.style.display = "flex";
         }
+        
     }
 
     checkMobile();
