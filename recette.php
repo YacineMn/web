@@ -1,57 +1,75 @@
 <?php
-require("includes/db.php"); // on inclut la connexion a la base
-require("classes/Recette.php"); // on inclut la classe Recette
+require("includes/session.php");
+require("includes/db.php");
+require("includes/functions.php");
+require("classes/Recette.php");
 
-$pdo = getPDO(); // on recupere la connexion PDO
-$recetteObj = new Recette($pdo); // on cree un objet Recette
+$pdo        = getPDO();
+$recetteObj = new Recette($pdo);
 
-// on recupere l'id depuis l'url
-if(isset($_GET['id'])){
-    $id = $_GET['id'];
-} else {
-    $id = "";
+$id = isset($_GET['id']) ? $_GET['id'] : "";
+if(empty($id)) die("ID manquant");
+
+$recette = $recetteObj->getById($id);
+
+// helper : retourne le src d'une image recette avec fallback si fichier absent
+function imgRecette($nom){
+    $path = "uploads/recettes/" . $nom;
+    if($nom && file_exists($path)) return $path;
+    return "uploads/recettes/default_recette.jpg";
 }
 
-if(empty($id)){
-    die("ID manquant"); // si pas d'id on arrete tout
+// helper : retourne le src d'une image ingredient avec fallback si fichier absent
+function imgIngredient($nom){
+    $path = "uploads/ingredients/" . $nom;
+    if($nom && file_exists($path)) return $path;
+    return "uploads/ingredients/default_ingredient.jpg";
 }
-
-$recette = $recetteObj->getById($id); // on recupere la recette complete
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détail recette</title>
-</head>
-<body>
+<?php require("includes/header.php"); ?>
+
 <?php if($recette): ?>
 
-    <h1><?= htmlspecialchars($recette->titre) ?></h1>
-    <img src="<?= htmlspecialchars($recette->photo) ?>" width="300">
-    <p><?= htmlspecialchars($recette->description) ?></p>
+<section class="recette-detail">
 
-    <h3>Ingrédients :</h3>
-    <ul>
-        <?php foreach($recette->ingredients as $ingredient): ?>
-            <li>
-                <?= htmlspecialchars($ingredient->nom) ?>
-                - <?= htmlspecialchars($ingredient->quantite) ?>
-            </li>
-        <?php endforeach; ?>
-    </ul>
+    <img src="<?= htmlspecialchars(imgRecette($recette->photo)) ?>"
+         alt="<?= htmlspecialchars($recette->titre) ?>">
 
-    <h3>Tags :</h3>
-    <ul>
-        <?php foreach($recette->tags as $tag): ?>
-            <li><?= htmlspecialchars($tag->nom) ?></li>
-        <?php endforeach; ?>
-    </ul>
+    <div class="recette-detail-body">
+
+        <h1><?= htmlspecialchars($recette->titre) ?></h1>
+        <p><?= htmlspecialchars($recette->description) ?></p>
+
+        <h3>Ingrédients</h3>
+        <ul>
+            <?php foreach($recette->ingredients as $ingredient): ?>
+                <li>
+                    <img src="<?= htmlspecialchars(imgIngredient($ingredient->image)) ?>"
+                         alt="<?= htmlspecialchars($ingredient->nom) ?>"
+                         style="width:30px; height:30px; object-fit:cover; border-radius:50%; vertical-align:middle; margin-right:0.4rem;">
+                    <?= htmlspecialchars($ingredient->nom) ?>
+                    <?php if(!empty($ingredient->quantite)): ?>
+                        — <?= htmlspecialchars($ingredient->quantite) ?>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+
+        <?php if(!empty($recette->tags)): ?>
+            <h3>Tags</h3>
+            <div class="tags">
+                <?php foreach($recette->tags as $tag): ?>
+                    <span class="tag"><?= htmlspecialchars($tag->nom) ?></span>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
+    </div>
+</section>
 
 <?php else: ?>
-    <p>Recette introuvable</p>
+    <p>Recette introuvable.</p>
 <?php endif; ?>
-</body>
-</html>
+
+<?php require("includes/footer.php"); ?>

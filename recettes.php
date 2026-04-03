@@ -1,59 +1,102 @@
 <?php
-require("includes/db.php"); // on inclut la connexion a la base
-require("classes/Recette.php"); // on inclut la classe Recette
+require("includes/session.php");
+require("includes/db.php");
+require("includes/functions.php");
+require("classes/Recette.php");
+require("classes/Ingredient.php");
+require("classes/Tag.php");
 
-$pdo = getPDO(); // on recupere la connexion PDO
-$recetteObj = new Recette($pdo); // on cree un objet Recette
+$pdo        = getPDO();
+$recetteObj = new Recette($pdo);
+$ingredientObj = new Ingredient($pdo);
+$tagObj     = new Tag($pdo);
 
-// on recupere les filtres envoyes par le formulaire de recherche
-$titre = isset($_GET['titre']) ? $_GET['titre'] : "";
-// si l'utilisateur a tape un titre on le recupere sinon vide
+$titre         = isset($_GET['titre'])        ? $_GET['titre']        : "";
 $id_ingredient = isset($_GET['id_ingredient']) ? $_GET['id_ingredient'] : "";
-// si l'utilisateur a choisi un ingredient on recupere son id sinon vide
-$id_tag = isset($_GET['id_tag']) ? $_GET['id_tag'] : "";
-// si l'utilisateur a choisi un tag on recupere son id sinon vide
+$id_tag        = isset($_GET['id_tag'])        ? $_GET['id_tag']        : "";
 
-// si au moins un filtre est rempli on fait une recherche sinon on affiche tout
 if(!empty($titre) || !empty($id_ingredient) || !empty($id_tag)){
     $recettes = $recetteObj->search($titre, $id_ingredient, $id_tag);
-    // on appelle search() avec les filtres recuperes
 } else {
     $recettes = $recetteObj->getAll();
-    // pas de filtre = on affiche toutes les recettes
+}
+
+$ingredients = $ingredientObj->getAll();
+$tags        = $tagObj->getAll();
+
+// fallback image recette
+function imgRecette($nom){
+    $path = "uploads/recettes/" . $nom;
+    if($nom && file_exists($path)) return $path;
+    return "uploads/recettes/default_recette.jpg";
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des recettes</title>
-    <link rel="stylesheet" href="assets/css/recettes.css">
-</head>
-<body>
-    <main class="recipes-page">
-        <div class="container">
-            <h1 class="page-title">Liste des recettes</h1>
+<?php require("includes/header.php"); ?>
 
-            <?php if(empty($recettes)): ?>
-                <!-- si aucune recette trouvee on affiche un message -->
-                <p>Aucune recette trouvée.</p>
-            <?php else: ?>
-                <div class="recipes-grid">
-                    <?php foreach($recettes as $recette): ?>
-                        <article class="recipe-card">
-                            <h2><?= htmlspecialchars($recette->titre) ?></h2>
-                            <p><?= htmlspecialchars($recette->description) ?></p>
-                            <a href="recette.php?id=<?= $recette->id ?>" class="recipe-link">
-                                Voir la recette
-                            </a>
-                        </article>
-                    <?php endforeach; ?>
-                </div>
+<section class="site-main">
+
+    <!-- filtres de recherche avancée -->
+    <div class="recherche-avancee">
+        <form action="recettes.php" method="GET">
+            <select name="id_ingredient">
+                <option value="">Tous les ingrédients</option>
+                <?php foreach($ingredients as $i): ?>
+                    <option value="<?= $i->id ?>"
+                        <?= ($id_ingredient == $i->id) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($i->nom) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+            <select name="id_tag">
+                <option value="">Tous les tags</option>
+                <?php foreach($tags as $t): ?>
+                    <option value="<?= $t->id ?>"
+                        <?= ($id_tag == $t->id) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($t->nom) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+            <button type="submit">Filtrer</button>
+            <?php if(!empty($titre) || !empty($id_ingredient) || !empty($id_tag)): ?>
+                <a href="recettes.php" style="font-size:0.85rem; color:var(--gris); margin-left:0.5rem;">
+                    Réinitialiser
+                </a>
             <?php endif; ?>
+        </form>
+    </div>
 
+    <h2 class="page-title">
+        <?= empty($titre) && empty($id_ingredient) && empty($id_tag)
+            ? "Toutes les recettes"
+            : "Résultats de recherche" ?>
+        <span style="font-size:0.85rem; color:var(--gris); font-family:'DM Sans',sans-serif; font-weight:400;">
+            (<?= count($recettes) ?> recette<?= count($recettes) > 1 ? 's' : '' ?>)
+        </span>
+    </h2>
+
+    <?php if(empty($recettes)): ?>
+        <p>Aucune recette trouvée.</p>
+    <?php else: ?>
+        <div class="recipes-grid">
+            <?php foreach($recettes as $recette): ?>
+                <article class="recipe-card">
+                    <img src="<?= htmlspecialchars(imgRecette($recette->photo)) ?>"
+                         alt="<?= htmlspecialchars($recette->titre) ?>">
+                    <div class="card-body">
+                        <h3><?= htmlspecialchars($recette->titre) ?></h3>
+                        <p><?= htmlspecialchars($recette->description) ?></p>
+                        <a href="recette.php?id=<?= $recette->id ?>" class="recipe-link">
+                            Voir la recette
+                        </a>
+                    </div>
+                </article>
+            <?php endforeach; ?>
         </div>
-    </main>
-</body>
-</html>
+    <?php endif; ?>
+
+</section>
+
+<?php require("includes/footer.php"); ?>
