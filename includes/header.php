@@ -33,7 +33,9 @@ $base = "/web/";
 
             <!-- bouton burger -->
             <button id="burger" onclick="toggleSidebar()">☰</button>
-
+            <h1 class="site-title">
+                <a href="<?= $base ?>index.php">TasteLab</a>
+            </h1>
             <form action="<?= $base ?>recettes.php" method="GET" class="header-search">
                 <input type="text" name="titre"
                     placeholder="Rechercher une recette..."

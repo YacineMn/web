@@ -543,6 +543,7 @@ button[type="submit"]:hover { background: #D9733E; }
     border-radius: var(--radius);
     font-size: 0.9rem;
     font-weight: 500;
+    text-align: center;
 }
 
 .admin-actions .btn-admin:hover { background: var(--terre); }
@@ -578,20 +579,39 @@ button[type="submit"]:hover { background: #D9733E; }
 .admin-table tr:last-child td { border-bottom: none; }
 .admin-table tr:hover td { background: var(--creme); }
 
-.btn-modifier, .btn-supprimer {
+/* ============================================================
+   BOUTONS MODIFIER ET SUPPRIMER DANS LE TABLEAU
+   ============================================================ */
+.admin-table td .btn-modifier,
+.admin-table td .btn-supprimer {
+    display: inline-block; /* côte à côte */
     padding: 0.3rem 0.8rem;
     border-radius: 50px;
     font-size: 0.82rem;
     font-weight: 500;
-    margin-right: 0.3rem;
+    margin-right: 0.5rem; /* espace entre les boutons */
+    text-align: center;
 }
 
-.btn-modifier { background: var(--sauge); color: var(--blanc); }
-.btn-modifier:hover { background: #7D9068; }
+.btn-modifier {
+    background: var(--sauge);
+    color: var(--blanc);
+}
+.btn-modifier:hover {
+    background: #7D9068;
+}
 
-.btn-supprimer { border: 1.5px solid #E05252; color: #E05252; }
-.btn-supprimer:hover { background: #E05252; color: var(--blanc); }
+.btn-supprimer {
+    border: 1.5px solid #E05252;
+    color: #E05252;
+    background: transparent; /* plus de fond rouge */
+}
+.btn-supprimer:hover {
+    background: transparent; /* plus d'effet rouge */
+    color: #E05252;
+}
 
+/* formulaire admin */
 .admin-form { max-width: 680px; }
 
 .admin-form h1 {
@@ -601,7 +621,6 @@ button[type="submit"]:hover { background: #D9733E; }
     padding-bottom: 1rem;
     border-bottom: 2px solid var(--beige);
 }
-
 /* ============================================================
    TITRES
    ============================================================ */
