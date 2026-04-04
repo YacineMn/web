@@ -1,31 +1,52 @@
 <?php
-require_once("includes/session.php"); // on demarre la session
-require_once("includes/functions.php"); // on inclut les fonctions utilitaires
-require_once("includes/db.php"); // on inclut la connexion a la base
-require_once("classes/Recette.php"); // on inclut la classe Recette
+require_once("includes/session.php");
+require_once("includes/functions.php");
+require_once("includes/db.php");
+require_once("classes/Recette.php");
 
-requireAdmin(); // si pas admin on redirige vers login.php automatiquement
+requireAdmin();
 
-$pdo = getPDO(); // on recupere la connexion PDO
-$recetteObj = new Recette($pdo); // on cree un objet Recette
-$recettes = $recetteObj->getAll(); // on recupere toutes les recettes pour les afficher
+$pdo        = getPDO();
+$recetteObj = new Recette($pdo);
+$recettes   = $recetteObj->getAll();
 ?>
 
 <?php require("includes/header.php"); ?>
 
 <section class="admin-page">
-    <h1>Tableau de bord - Administration</h1>
+    <h1>Tableau de bord</h1>
 
-    <!-- liens vers les actions admin -->
     <div class="admin-actions">
-        <a href="admin/ajouter_recette.php" class="btn-admin">Ajouter une recette</a>
-        <a href="admin/gerer_tags.php" class="btn-admin">Gérer les tags</a>
+        <a href="admin/ajouter_recette.php" class="btn-admin">+ Ajouter une recette</a>
+        <a href="admin/gerer_tags.php"       class="btn-admin">Gérer les tags</a>
         <a href="admin/gerer_ingredients.php" class="btn-admin">Gérer les ingrédients</a>
     </div>
 
-    <!-- liste de toutes les recettes avec boutons modifier et supprimer -->
-    <h2>Liste des recettes</h2>
-    <table class="admin-table">
+    <!-- en-tête section recettes + barre de recherche sur la même ligne -->
+    <div class="admin-table-header">
+        <h2>Liste des recettes
+            <span id="compteur-recettes" class="compteur-badge">
+                <?= count($recettes) ?> recette<?= count($recettes) > 1 ? 's' : '' ?>
+            </span>
+        </h2>
+        <!-- barre de recherche hors de tout <form> -->
+        <div class="admin-search-wrap">
+            <input
+                type="text"
+                id="recherche-recettes"
+                placeholder="🔍  Rechercher une recette…"
+                autocomplete="off">
+        </div>
+    </div>
+
+    <p id="aucune-recette"
+       style="display:none; margin-top:1rem; padding:1.2rem; text-align:center;
+              background:var(--blanc); border:1.5px dashed var(--beige);
+              border-radius:var(--radius); color:var(--gris); font-size:0.93rem;">
+        Aucune recette ne correspond à votre recherche.
+    </p>
+
+    <table class="admin-table" id="table-recettes">
         <thead>
             <tr>
                 <th>Titre</th>
@@ -35,25 +56,65 @@ $recettes = $recetteObj->getAll(); // on recupere toutes les recettes pour les a
         </thead>
         <tbody>
             <?php foreach($recettes as $recette): ?>
-                <tr>
+                <tr data-titre="<?= strtolower(htmlspecialchars($recette->titre)) ?>"
+                    data-desc="<?= strtolower(htmlspecialchars($recette->description)) ?>">
                     <td><?= htmlspecialchars($recette->titre) ?></td>
-                    <td><?= htmlspecialchars($recette->description) ?></td>
+                    <td style="color:var(--gris); font-size:0.88rem; max-width:340px;
+                               overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                        <?= htmlspecialchars($recette->description) ?>
+                    </td>
                     <td>
-                        <!-- lien vers la page de modification -->
-                        <a href="admin/modifier_recette.php?id=<?= $recette->id ?>" class="btn-modifier">
-                            Modifier
-                        </a>
-                        <!-- lien vers la page de suppression -->
+                        <a href="admin/modifier_recette.php?id=<?= $recette->id ?>"
+                           class="btn-modifier">Modifier</a>
                         <a href="admin/supprimer_recette.php?id=<?= $recette->id ?>"
                            class="btn-supprimer"
-                           onclick="return confirm('Supprimer cette recette ?')">
-                            Supprimer
-                        </a>
+                           onclick="return confirm('Supprimer cette recette ?')">Supprimer</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    var searchInput = document.getElementById("recherche-recettes");
+    var rows        = document.querySelectorAll("#table-recettes tbody tr");
+    var compteur    = document.getElementById("compteur-recettes");
+    var aucune      = document.getElementById("aucune-recette");
+    var total       = rows.length;
+
+    // bloquer Entrée pour éviter la soumission du form header
+    searchInput.addEventListener("keydown", function(e){
+        if(e.key === "Enter") e.preventDefault();
+    });
+
+    searchInput.addEventListener("input", function(){
+        var q       = this.value.trim().toLowerCase();
+        var visible = 0;
+
+        rows.forEach(function(row){
+            // on cherche dans le titre ET la description
+            var titre = row.dataset.titre || "";
+            var desc  = row.dataset.desc  || "";
+            if(titre.includes(q) || desc.includes(q)){
+                row.style.display = "";
+                visible++;
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        if(q === ""){
+            compteur.textContent = total + " recette" + (total > 1 ? "s" : "");
+        } else {
+            compteur.textContent = visible + " résultat" + (visible > 1 ? "s" : "") + " sur " + total;
+        }
+
+        aucune.style.display = (visible === 0 && q !== "") ? "block" : "none";
+    });
+});
+</script>
 
 <?php require("includes/footer.php"); ?>

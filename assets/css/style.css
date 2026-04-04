@@ -698,3 +698,229 @@ h2 {
     .recipes-grid { grid-template-columns: 1fr; }
     .admin-actions { flex-direction: column; }
 }
+/* ============================================================
+   À COLLER À LA FIN DE style.css
+   ============================================================ */
+
+/* ---- Dropdown autocomplete — fond blanc explicite ---- */
+.autocomplete-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #ffffff;          /* blanc pur, pas de variable */
+    border: 1.5px solid var(--beige);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(44, 26, 14, 0.12);
+    z-index: 200;
+    list-style: none;
+    padding: 0.4rem 0;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.autocomplete-dropdown li {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    color: var(--brun);
+    cursor: pointer;
+    background: #ffffff;          /* fond blanc sur chaque ligne */
+    transition: background 0.15s;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.autocomplete-dropdown li:hover {
+    background: #FAF6F0;          /* léger fond crème au survol */
+    color: var(--terre);
+}
+
+.autocomplete-dropdown li.autocomplete-create {
+    color: var(--sauge);
+    font-weight: 500;
+    border-top: 1px solid var(--beige);
+    margin-top: 0.2rem;
+    padding-top: 0.7rem;
+    background: #ffffff;
+}
+
+.autocomplete-dropdown li.autocomplete-create:hover {
+    background: #f0f5ec;
+    color: var(--sauge);
+}
+
+/* ---- Wrapper autocomplete ---- */
+.autocomplete-group .autocomplete-wrapper {
+    background: #ffffff;          /* fond blanc */
+    border: 1.5px solid var(--beige);
+    border-radius: var(--radius);
+    padding: 0.6rem 0.75rem;
+    position: relative;
+    transition: border-color 0.2s;
+}
+
+.autocomplete-group .autocomplete-wrapper:focus-within {
+    border-color: var(--terre);
+    box-shadow: 0 0 0 3px rgba(196, 98, 45, 0.10);
+}
+
+/* ---- Chips ---- */
+.chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 0.5rem;
+}
+
+.chips-container:empty { margin-bottom: 0; }
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: var(--terre);
+    color: #ffffff;
+    padding: 0.3rem 0.7rem 0.3rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.84rem;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    animation: chipIn 0.18s ease;
+}
+
+@keyframes chipIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+
+.chip-remove {
+    background: rgba(255, 255, 255, 0.25);
+    border: none;
+    color: #ffffff;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    font-family: inherit;
+    transition: background 0.15s;
+}
+
+.chip-remove:hover { background: rgba(255, 255, 255, 0.45); }
+
+/* ---- Input dans le wrapper ---- */
+.autocomplete-input-wrap { position: relative; }
+
+.autocomplete-input-wrap input[type="text"] {
+    width: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    color: var(--brun);
+    padding: 0.3rem 0;
+}
+
+.autocomplete-input-wrap input[type="text"]::placeholder {
+    color: var(--gris);
+    opacity: 0.8;
+}
+
+/* ---- Hint ---- */
+.autocomplete-hint {
+    font-size: 0.78rem;
+    color: var(--gris);
+    margin-top: 0.45rem;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.autocomplete-hint kbd {
+    background: var(--beige);
+    border: 1px solid #d4c8b4;
+    border-radius: 4px;
+    padding: 0 5px;
+    font-size: 0.75rem;
+    font-family: inherit;
+    color: var(--brun);
+}
+
+/* ---- Ingrédients actuels (page modifier) ---- */
+.ingredients-actuels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.4rem;
+}
+
+.ingredient-actuel-item {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: var(--creme);
+    border: 1.5px solid var(--beige);
+    padding: 0.35rem 0.8rem 0.35rem 0.4rem;
+    border-radius: 50px;
+    font-size: 0.88rem;
+    color: var(--brun);
+}/* ============================================================
+   ADMIN — en-tête tableau + barre de recherche recettes
+   À ajouter à la fin de style.css
+   ============================================================ */
+
+/* ligne titre + barre de recherche côte à côte */
+.admin-table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    margin-top: 0.5rem;
+}
+
+.admin-table-header h2 {
+    margin-bottom: 0; /* annule le margin-bottom global du h2 */
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+/* badge compteur à côté du titre */
+.compteur-badge {
+    display: inline-block;
+    background: var(--beige);
+    color: var(--gris);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.2rem 0.7rem;
+    border-radius: 50px;
+    letter-spacing: 0;
+    text-transform: none;
+    vertical-align: middle;
+}
+
+/* barre de recherche recettes */
+.admin-search-wrap input[type="text"] {
+    padding: 0.55rem 1.1rem;
+    border: 1.5px solid var(--beige);
+    border-radius: 50px;
+    background: var(--blanc);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--brun);
+    outline: none;
+    width: 260px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.admin-search-wrap input[type="text"]:focus {
+    border-color: var(--terre);
+    box-shadow: 0 0 0 3px rgba(196, 98, 45, 0.10);
+}
