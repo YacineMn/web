@@ -34,40 +34,38 @@ class Recette{
         return $recette; //on retourne la recette complete 
     }
     public function search($titre="", $id_ingredient="", $id_tag=""){
-        // les 3 parametres sont optionnels
-        
-        $sql="SELECT DISTINCT r.* FROM recettes r
-            LEFT JOIN recette_ingredients ri ON r.id = ri.recette_id
-            LEFT JOIN ingredients i ON i.id = ri.ingredient_id
-            LEFT JOIN recette_tags rt ON r.id = rt.recette_id
-            LEFT JOIN tags t ON t.id = rt.tag_id
-            WHERE 1=1";
-        // on joint toutes les tables d'un coup
-        // LEFT JOIN = on garde toutes les recettes meme si elles ont pas d'ingredients ou de tags
-        // WHERE 1=1 = condition toujours vraie qui permet d'ajouter des AND apres facilement
+        $sql="SELECT * FROM recettes r WHERE 1=1";
         $params=[];
-       if(!empty($titre)){
-            $sql.=" AND (r.titre LIKE ? OR i.nom LIKE ? OR t.nom LIKE ?)";
-            // on cherche dans le titre ET dans les ingredients ET dans les tags
-            $params[]="%".$titre."%";
-            $params[]="%".$titre."%";
-            $params[]="%".$titre."%";
-            // on ajoute 3 fois car 3 ?
-        }
-        if(!empty($id_ingredient)){
-            $sql.=" AND ri.ingredient_id = ?";
-            // on ajoute le filtre ingredient seulement si l'utilisateur en a choisi un
-            $params[]=$id_ingredient;
-        }
-        if(!empty($id_tag)){
-            $sql.=" AND rt.tag_id = ?";
-            // on ajoute le filtre tag seulement si l'utilisateur en a choisi un
-            $params[]=$id_tag;
+
+        if(!empty($titre)){
+            $mots = explode(" ", trim($titre));
+            foreach($mots as $mot){
+                $mot = trim($mot);
+                if(empty($mot)) continue;
+                $sql .= " AND (
+                    r.titre LIKE ?
+                    OR EXISTS (SELECT 1 FROM recette_ingredients ri JOIN ingredients i ON i.id=ri.ingredient_id WHERE ri.recette_id=r.id AND i.nom LIKE ?)
+                    OR EXISTS (SELECT 1 FROM recette_tags rt JOIN tags t ON t.id=rt.tag_id WHERE rt.recette_id=r.id AND t.nom LIKE ?)
+                )";
+                $params[] = "%".$mot."%";
+                $params[] = "%".$mot."%";
+                $params[] = "%".$mot."%";
+            }
         }
 
-        $st=$this->pdo->prepare($sql); // on prepare la requete finale
-        $st->execute($params); // on envoie les valeurs des filtres
-        return $st->fetchAll(PDO::FETCH_OBJ); // on retourne les recettes trouvees
+        if(!empty($id_ingredient)){
+            $sql .= " AND EXISTS (SELECT 1 FROM recette_ingredients ri WHERE ri.recette_id=r.id AND ri.ingredient_id=?)";
+            $params[] = $id_ingredient;
+        }
+
+        if(!empty($id_tag)){
+            $sql .= " AND EXISTS (SELECT 1 FROM recette_tags rt WHERE rt.recette_id=r.id AND rt.tag_id=?)";
+            $params[] = $id_tag;
+        }
+
+        $st=$this->pdo->prepare($sql);
+        $st->execute($params);
+        return $st->fetchAll(PDO::FETCH_OBJ);
     }
     public function ajouter($titre,$description,$photo){ //fonctions qui permet d'inserer une nouvelle recette dans la tables recettes
         $sql="INSERT INTO recettes (titre,description,photo) VALUES(?,?,?)";//la requete sql qui permet d'inserer une recette avec les parametre (titre description et photo)

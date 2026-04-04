@@ -1,57 +1,67 @@
 <?php
-require_once(__DIR__ . "/session.php"); // on demarre la session
-$admin = isset($_SESSION['admin']) && $_SESSION['admin'] === true; // on verifie si admin connecte
-$base = "/web/";
+require_once(__DIR__ . "/session.php");
+$admin = isset($_SESSION['admin']) && $_SESSION['admin'] === true;
+$base  = "/web/";
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TasteLab</title>
-<link rel="stylesheet" href="<?= $base ?>assets/css/style.css">
-<script src="<?= $base ?>assets/js/main.js"></script>
-<script src="<?= $base ?>assets/js/sidebar.js"></script>
+    <link rel="stylesheet" href="<?= $base ?>assets/css/style.css">
+    <script src="<?= $base ?>assets/js/main.js"></script>
+    <script src="<?= $base ?>assets/js/sidebar.js"></script>
 </head>
 <body>
 <div class="layout">
 
-    <!-- sidebar gauche -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-logo">
-            <a href="<?= $base ?>index.php">TasteLab</a>
-        </div>
-        <nav class="sidebar-nav">
-            <a href="<?= $base ?>index.php" class="sidebar-link">Accueil</a>
-            <a href="<?= $base ?>recettes.php" class="sidebar-link">Toutes les recettes</a>
-        </nav>
-    </aside>
 
     <div class="main-wrapper" id="main-wrapper">
+
+        <!-- =====================================================
+             BANNIÈRE — titre du site + navigation principale
+             Toujours visible, conforme au cahier des charges
+        ===================================================== -->
         <header class="site-header">
 
-            <!-- bouton burger -->
-            <button id="burger" onclick="toggleSidebar()">☰</button>
-            <h1 class="site-title">
-                <a href="<?= $base ?>index.php">TasteLab</a>
-            </h1>
+
+            <!-- titre / logo -->
+            <div class="site-brand">
+                <a href="<?= $base ?>index.php" class="site-title">TasteLab</a>
+            </div>
+
+            <!-- navigation principale — toujours visible -->
+            <nav class="header-nav">
+                <a href="<?= $base ?>index.php"
+                   class="nav-link <?= (basename($_SERVER['PHP_SELF']) === 'index.php') ? 'active' : '' ?>">
+                    Accueil
+                </a>
+                <a href="<?= $base ?>recettes.php"
+                   class="nav-link <?= (basename($_SERVER['PHP_SELF']) === 'recettes.php') ? 'active' : '' ?>">
+                    Recettes
+                </a>
+            </nav>
+            <!-- barre de recherche globale -->
             <form action="<?= $base ?>recettes.php" method="GET" class="header-search">
-                <input type="text" name="titre"
-                    placeholder="Rechercher une recette..."
-                    value="<?= isset($_GET['titre']) ? htmlspecialchars($_GET['titre']) : '' ?>"
-                    autocomplete="off">
+                <input type="text"
+                       name="titre"
+                       placeholder="Rechercher une recette…"
+                       value="<?= isset($_GET['titre']) ? htmlspecialchars($_GET['titre']) : '' ?>"
+                       autocomplete="off">
                 <button type="submit">Rechercher</button>
             </form>
 
+            <!-- zone admin -->
             <div class="header-admin">
-                <?php if($admin): ?>
-                    <a href="<?= $base ?>admin.php" class="btn-admin">Admin</a>
+                <?php if ($admin): ?>
+                    <a href="<?= $base ?>admin.php"  class="btn-admin">Admin</a>
                     <a href="<?= $base ?>logout.php" class="btn-logout">Déconnexion</a>
                 <?php else: ?>
-                    <a href="<?= $base ?>login.php" class="btn-login">Connexion admin</a>
+                    <a href="<?= $base ?>login.php"  class="btn-login">Connexion admin</a>
                 <?php endif; ?>
             </div>
 
         </header>
+
         <main class="site-main">

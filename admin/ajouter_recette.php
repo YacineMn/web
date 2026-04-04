@@ -25,14 +25,27 @@ if (isset($_POST['titre'])) {
     if (empty($titre))       $erreurs[] = "Le titre est obligatoire.";
     if (empty($description)) $erreurs[] = "La description est obligatoire.";
 
-    // photo recette OBLIGATOIRE côté serveur
+    // photo recette OBLIGATOIRE
     if (!isset($_FILES['photo']) || $_FILES['photo']['error'] !== 0) {
         $erreurs[] = "La photo de la recette est obligatoire.";
     } else {
-        $extensions_ok = ['jpg', 'jpeg', 'png', 'webp'];
+        $extensions_ok = ['jpg','jpeg','png','webp'];
         $ext = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
         if (!in_array($ext, $extensions_ok)) {
             $erreurs[] = "Format de photo non autorisé (jpg, jpeg, png, webp).";
+        }
+    }
+
+    // validation des nouveaux ingrédients : si nom rempli → photo obligatoire
+    if (isset($_POST['new_ingredient_noms'])) {
+        foreach ($_POST['new_ingredient_noms'] as $idx => $nom_new) {
+            $nom_new = trim($nom_new);
+            if (!empty($nom_new)) {
+                if (!isset($_FILES['new_ingredient_photos']['error'][$idx])
+                    || $_FILES['new_ingredient_photos']['error'][$idx] !== 0) {
+                    $erreurs[] = "La photo est obligatoire pour le nouvel ingrédient \"" . htmlspecialchars($nom_new) . "\".";
+                }
+            }
         }
     }
 
@@ -42,16 +55,16 @@ if (isset($_POST['titre'])) {
 
         $id_recette = $recetteObj->ajouter($titre, $description, $photo);
 
-        // ingrédients existants
+        // ingrédients existants cochés
         if (isset($_POST['ingredients'])) {
-            foreach ($_POST['ingredients'] as $val) {
+            foreach ($_POST['ingredients'] as $id_ing) {
                 $st = $pdo->prepare("INSERT INTO recette_ingredients (recette_id, ingredient_id, quantite) VALUES (?,?,?)");
-                $st->execute([$id_recette, $val, ""]);
+                $st->execute([$id_recette, $id_ing, ""]);
             }
         }
 
-        // nouveaux ingrédients créés via la modale JS (nom + photo)
-        if (isset($_POST['new_ingredient_noms']) && is_array($_POST['new_ingredient_noms'])) {
+        // nouveaux ingrédients saisis
+        if (isset($_POST['new_ingredient_noms'])) {
             foreach ($_POST['new_ingredient_noms'] as $idx => $nom_new) {
                 $nom_new = trim($nom_new);
                 if (empty($nom_new)) continue;
@@ -59,11 +72,8 @@ if (isset($_POST['titre'])) {
                 $image_new = "default_ingredient.jpg";
                 if (isset($_FILES['new_ingredient_photos']['error'][$idx])
                     && $_FILES['new_ingredient_photos']['error'][$idx] === 0) {
-                    $extensions_ok = ['jpg', 'jpeg', 'png', 'webp'];
-                    $ext_new = strtolower(pathinfo(
-                        $_FILES['new_ingredient_photos']['name'][$idx],
-                        PATHINFO_EXTENSION
-                    ));
+                    $extensions_ok = ['jpg','jpeg','png','webp'];
+                    $ext_new = strtolower(pathinfo($_FILES['new_ingredient_photos']['name'][$idx], PATHINFO_EXTENSION));
                     if (in_array($ext_new, $extensions_ok)) {
                         $image_new = uniqid() . '.' . $ext_new;
                         move_uploaded_file(
@@ -78,20 +88,22 @@ if (isset($_POST['titre'])) {
             }
         }
 
-        // tags
+        // tags existants cochés
         if (isset($_POST['tags'])) {
-            foreach ($_POST['tags'] as $val) {
-                if (strpos($val, 'new_') === 0) {
-                    $nom_tag = trim(substr($val, 4));
-                    if (!empty($nom_tag)) {
-                        $id_tag = $tagObj->ajouter($nom_tag);
-                        $st = $pdo->prepare("INSERT INTO recette_tags (recette_id, tag_id) VALUES (?,?)");
-                        $st->execute([$id_recette, $id_tag]);
-                    }
-                } else {
-                    $st = $pdo->prepare("INSERT INTO recette_tags (recette_id, tag_id) VALUES (?,?)");
-                    $st->execute([$id_recette, $val]);
-                }
+            foreach ($_POST['tags'] as $id_tag) {
+                $st = $pdo->prepare("INSERT INTO recette_tags (recette_id, tag_id) VALUES (?,?)");
+                $st->execute([$id_recette, $id_tag]);
+            }
+        }
+
+        // nouveaux tags saisis
+        if (isset($_POST['new_tags'])) {
+            foreach ($_POST['new_tags'] as $nom_tag) {
+                $nom_tag = trim($nom_tag);
+                if (empty($nom_tag)) continue;
+                $id_tag = $tagObj->ajouter($nom_tag);
+                $st = $pdo->prepare("INSERT INTO recette_tags (recette_id, tag_id) VALUES (?,?)");
+                $st->execute([$id_recette, $id_tag]);
             }
         }
 
@@ -99,33 +111,9 @@ if (isset($_POST['titre'])) {
         exit();
     }
 }
-
-$ingredients_json = json_encode(array_map(function($i) {
-    return ['id' => $i->id, 'nom' => $i->nom];
-}, $ingredients));
-
-$tags_json = json_encode(array_map(function($t) {
-    return ['id' => $t->id, 'nom' => $t->nom];
-}, $tags));
 ?>
 
 <?php require("../includes/header.php"); ?>
-
-<script>
-    window.TASTELAB_INGREDIENTS     = <?= $ingredients_json ?>;
-    window.TASTELAB_TAGS            = <?= $tags_json ?>;
-    window.TASTELAB_SEL_INGREDIENTS = [];
-    window.TASTELAB_SEL_TAGS        = [];
-</script>
-
-<?php
-/*
- * PAS de modale HTML ici dans le DOM au chargement.
- * La modale est créée dynamiquement par validation_recette.js
- * uniquement quand l'admin clique "+ Créer un ingrédient".
- * Cela évite que le bloc s'affiche à l'ouverture de la page.
- */
-?>
 
 <section class="admin-form">
     <h1>Ajouter une recette</h1>
@@ -154,58 +142,145 @@ $tags_json = json_encode(array_map(function($t) {
             <textarea name="description" id="description"><?= isset($_POST['description']) ? htmlspecialchars($_POST['description']) : '' ?></textarea>
         </div>
 
-        <!-- PHOTO RECETTE — obligatoire -->
+        <!-- PHOTO RECETTE obligatoire -->
         <div class="form-group">
             <label for="photo">
                 Photo de la recette *
-                <span style="color:var(--terre); font-size:0.78rem;">(obligatoire)</span>
+                <span class="label-hint">(obligatoire)</span>
             </label>
             <input type="file" name="photo" id="photo" accept="image/*">
-            <img id="preview" src=""
-                 style="display:none; max-width:200px; margin-top:0.6rem; border-radius:8px; border:2px solid var(--beige);">
+            <img id="preview-recette" src=""
+                 style="display:none; max-width:200px; margin-top:0.6rem;
+                        border-radius:8px; border:2px solid var(--beige);">
         </div>
 
-        <!-- INGRÉDIENTS — autocomplétion -->
-        <div class="form-group autocomplete-group">
-            <label for="search-ingredients">Ingrédients</label>
-            <div class="autocomplete-wrapper">
-                <div class="chips-container" id="chips-ingredients"></div>
-                <div class="autocomplete-input-wrap">
-                    <input type="text" id="search-ingredients"
-                           placeholder="Tapez pour chercher un ingrédient…"
-                           autocomplete="off">
-                    <ul class="autocomplete-dropdown" id="dropdown-ingredients"></ul>
-                </div>
-                <p class="autocomplete-hint">
-                    Sélectionnez un ingrédient existant dans la liste déroulante ·
-                    ou cliquez <strong>+ Créer</strong> pour en ajouter un nouveau
-                    (une photo sera demandée).
-                </p>
+        <!-- ================================================
+             INGRÉDIENTS EXISTANTS — filtrés par recherche
+        ================================================ -->
+        <div class="form-group">
+            <label>Ingrédients existants</label>
+
+            <!-- barre de filtrage — hors form, Entrée bloquée par JS -->
+            <div class="filtre-wrap">
+                <input type="text"
+                       id="filtre-ingredients"
+                       placeholder="🔍  Filtrer les ingrédients…"
+                       autocomplete="off">
             </div>
-            <!-- inputs hidden générés par JS pour les nouveaux ingrédients -->
-            <div id="new-ingredients-fields"></div>
+
+            <!-- cases à cocher filtrées -->
+            <div class="checkboxes" id="liste-ingredients">
+                <?php foreach ($ingredients as $i): ?>
+                    <label class="checkbox-item"
+                           data-nom="<?= strtolower(htmlspecialchars($i->nom)) ?>">
+                        <input type="checkbox"
+                               name="ingredients[]"
+                               value="<?= $i->id ?>"
+                               <?= (isset($_POST['ingredients']) && in_array($i->id, $_POST['ingredients'])) ? 'checked' : '' ?>>
+                        <?= htmlspecialchars($i->nom) ?>
+                    </label>
+                <?php endforeach; ?>
+            </div>
+            <p id="aucun-ingredient-filtre"
+               style="display:none; font-size:0.82rem; color:var(--gris); margin-top:0.4rem;">
+                Aucun ingrédient ne correspond. Créez-en un ci-dessous.
+            </p>
         </div>
 
-        <!-- TAGS — autocomplétion -->
-        <div class="form-group autocomplete-group">
-            <label for="search-tags">Tags</label>
-            <div class="autocomplete-wrapper">
-                <div class="chips-container" id="chips-tags"></div>
-                <div class="autocomplete-input-wrap">
-                    <input type="text" id="search-tags"
-                           placeholder="Tapez pour chercher ou créer un tag…"
-                           autocomplete="off">
-                    <ul class="autocomplete-dropdown" id="dropdown-tags"></ul>
+        <!-- ================================================
+             NOUVEAUX INGRÉDIENTS — ajout dynamique
+        ================================================ -->
+        <div class="form-group">
+            <label>Nouvel ingrédient
+                <span class="label-hint">(si absent de la liste)</span>
+            </label>
+
+            <div id="nouveaux-ingredients">
+                <!-- ligne 0 présente par défaut -->
+                <div class="new-ingredient-row" id="new-ing-row-0">
+                    <div class="new-ingredient-fields">
+                        <input type="text"
+                               name="new_ingredient_noms[]"
+                               placeholder="Nom de l'ingrédient"
+                               class="new-ing-nom"
+                               value="<?= (isset($_POST['new_ingredient_noms'][0])) ? htmlspecialchars($_POST['new_ingredient_noms'][0]) : '' ?>">
+                        <div class="new-ingredient-photo-wrap">
+                            <input type="file"
+                                   name="new_ingredient_photos[0]"
+                                   accept="image/*"
+                                   class="new-ing-photo">
+                            <img class="new-ing-preview" src=""
+                                 style="display:none; max-width:60px; border-radius:6px;
+                                        border:2px solid var(--beige); margin-top:0.3rem;">
+                        </div>
+                    </div>
+                    <!-- bouton supprimer cette ligne (caché sur la 1ère) -->
+                    <button type="button"
+                            class="btn-suppr-row"
+                            style="display:none;"
+                            title="Supprimer cette ligne">✕</button>
                 </div>
-                <p class="autocomplete-hint">
-                    Sélectionnez un tag existant · ou appuyez sur
-                    <kbd>Entrée</kbd> / cliquez <strong>+ Créer</strong> pour un nouveau tag.
-                </p>
             </div>
+
+            <!-- bouton ajouter une ligne -->
+            <button type="button" id="btn-ajouter-ingredient" class="btn-ajouter-ligne">
+                + Ajouter un autre ingrédient
+            </button>
+        </div>
+
+        <!-- ================================================
+             TAGS EXISTANTS — filtrés par recherche
+        ================================================ -->
+        <div class="form-group">
+            <label>Tags existants</label>
+            <div class="filtre-wrap">
+                <input type="text"
+                       id="filtre-tags"
+                       placeholder="🔍  Filtrer les tags…"
+                       autocomplete="off">
+            </div>
+            <div class="checkboxes" id="liste-tags">
+                <?php foreach ($tags as $t): ?>
+                    <label class="checkbox-item"
+                           data-nom="<?= strtolower(htmlspecialchars($t->nom)) ?>">
+                        <input type="checkbox"
+                               name="tags[]"
+                               value="<?= $t->id ?>"
+                               <?= (isset($_POST['tags']) && in_array($t->id, $_POST['tags'])) ? 'checked' : '' ?>>
+                        <?= htmlspecialchars($t->nom) ?>
+                    </label>
+                <?php endforeach; ?>
+            </div>
+            <p id="aucun-tag-filtre"
+               style="display:none; font-size:0.82rem; color:var(--gris); margin-top:0.4rem;">
+                Aucun tag ne correspond. Créez-en un ci-dessous.
+            </p>
+        </div>
+
+        <!-- ================================================
+             NOUVEAUX TAGS
+        ================================================ -->
+        <div class="form-group">
+            <label>Nouveau tag
+                <span class="label-hint">(si absent de la liste)</span>
+            </label>
+            <div id="nouveaux-tags">
+                <div class="new-tag-row">
+                    <input type="text"
+                           name="new_tags[]"
+                           placeholder="Nom du tag"
+                           value="<?= (isset($_POST['new_tags'][0])) ? htmlspecialchars($_POST['new_tags'][0]) : '' ?>">
+                    <button type="button" class="btn-suppr-row" style="display:none;">✕</button>
+                </div>
+            </div>
+            <button type="button" id="btn-ajouter-tag" class="btn-ajouter-ligne">
+                + Ajouter un autre tag
+            </button>
         </div>
 
         <button type="submit">Ajouter la recette</button>
-        <a href="../admin.php">Annuler</a>
+        <a href="../admin.php" style="color:var(--gris); font-size:0.9rem;
+           text-decoration:underline; margin-left:0.5rem;">Annuler</a>
 
     </form>
 </section>

@@ -1,127 +1,50 @@
 /* ============================================================
-   TasteLab — CSS Principal
-   Simple, propre, niveau L2
+   TasteLab — CSS Principal — niveau L2
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');
 
-/* ---- Variables ---- */
+/* ============================================================
+   VARIABLES
+   ============================================================ */
 :root {
-    --creme:      #FAF6F0;
-    --brun:       #2C1A0E;
-    --terre:      #C4622D;
-    --beige:      #EDE0CC;
-    --sauge:      #6B7C5C;
-    --gris:       #7A6E65;
-    --blanc:      #FFFFFF;
-    --sidebar-w:  260px;
-    --radius:     10px;
-    --shadow:     0 2px 12px rgba(0,0,0,0.08);
+    --creme:  #FAF6F0;
+    --brun:   #2C1A0E;
+    --terre:  #C4622D;
+    --beige:  #EDE0CC;
+    --sauge:  #6B7C5C;
+    --gris:   #7A6E65;
+    --blanc:  #FFFFFF;
+    --radius: 10px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
-/* ---- Reset de base ---- */
+/* ============================================================
+   RESET
+   ============================================================ */
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
     font-family: 'DM Sans', sans-serif;
     background: var(--creme);
     color: var(--brun);
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
-a { color: inherit; text-decoration: none; }
+
+a   { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
 
 /* ============================================================
-   LAYOUT
-   ============================================================ */
-.layout {
-    display: flex;
-    min-height: 100vh;
-}
-
-/* ============================================================
-   SIDEBAR
-   cachee par defaut — s ouvre au clic sur le burger
-   ============================================================ */
-.sidebar {
-    width: var(--sidebar-w);
-    background: var(--brun);
-    position: fixed;
-    top: 0;
-    left: -260px; /* cachee par defaut */
-    height: 100vh;
-    z-index: 100;
-    padding: 2rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    transition: left 0.3s ease;
-}
-
-/* classe ajoutee par JS quand on ouvre la sidebar */
-.sidebar.ouverte {
-    left: 0;
-}
-
-.sidebar-logo a {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.6rem;
-    color: var(--creme);
-    display: block;
-    margin-bottom: 2rem;
-    border-bottom: 2px solid var(--terre);
-    padding-bottom: 1rem;
-}
-
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.sidebar-link {
-    color: #A3B08F;
-    font-size: 0.95rem;
-    padding: 0.7rem 1rem;
-    border-radius: var(--radius);
-    transition: background 0.2s, color 0.2s;
-}
-
-.sidebar-link:hover {
-    background: rgba(255,255,255,0.1);
-    color: var(--creme);
-}
-
-.sidebar-link.active {
-    background: var(--terre);
-    color: var(--blanc);
-}
-
-/* ============================================================
-   MAIN WRAPPER
-   se decale quand la sidebar est ouverte
-   ============================================================ */
-.main-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    margin-left: 0;
-    transition: margin-left 0.3s ease;
-}
-
-/* classe ajoutee par JS en meme temps que sidebar.ouverte */
-.main-wrapper.decale {
-    margin-left: var(--sidebar-w);
-}
-
-/* ============================================================
-   HEADER
+   HEADER — bannière principale
    ============================================================ */
 .site-header {
     background: var(--blanc);
-    padding: 1rem 1.5rem;
+    padding: 1rem 2rem;
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.2rem;
     border-bottom: 1px solid var(--beige);
     position: sticky;
     top: 0;
@@ -129,20 +52,39 @@ img { max-width: 100%; display: block; }
     box-shadow: var(--shadow);
 }
 
-/* bouton burger */
-#burger {
-    background: none;
-    border: none;
-    font-size: 1.4rem;
-    cursor: pointer;
+/* titre / logo */
+.site-brand  { flex-shrink: 0; }
+
+.site-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
     color: var(--brun);
-    padding: 0.3rem 0.5rem;
-    border-radius: 6px;
-    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.site-title:hover { color: var(--terre); }
+
+/* navigation principale */
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
     flex-shrink: 0;
 }
 
-#burger:hover { background: var(--beige); }
+.nav-link {
+    padding: 0.4rem 0.85rem;
+    border-radius: 50px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--gris);
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+
+.nav-link:hover  { background: var(--creme); color: var(--brun); }
+.nav-link.active { background: var(--beige); color: var(--brun); font-weight: 600; }
 
 /* barre de recherche */
 .header-search {
@@ -184,7 +126,7 @@ img { max-width: 100%; display: block; }
 
 .header-search button:hover { background: #D9733E; }
 
-/* liens admin dans le header */
+/* boutons admin */
 .header-admin {
     display: flex;
     gap: 0.5rem;
@@ -200,11 +142,11 @@ img { max-width: 100%; display: block; }
     white-space: nowrap;
 }
 
-.btn-login { border: 1.5px solid var(--beige); color: var(--gris); }
-.btn-login:hover { border-color: var(--terre); color: var(--terre); }
+.btn-login  { border: 1.5px solid var(--beige); color: var(--gris); }
+.btn-login:hover  { border-color: var(--terre); color: var(--terre); }
 
-.btn-admin { background: var(--sauge); color: var(--blanc); }
-.btn-admin:hover { background: #7D9068; }
+.btn-admin  { background: var(--sauge); color: var(--blanc); }
+.btn-admin:hover  { background: #7D9068; }
 
 .btn-logout { border: 1.5px solid var(--terre); color: var(--terre); }
 .btn-logout:hover { background: var(--terre); color: var(--blanc); }
@@ -214,14 +156,30 @@ img { max-width: 100%; display: block; }
    ============================================================ */
 .site-main {
     flex: 1;
-    padding: 2rem 1.5rem;
+    padding: 2rem 2rem;
     max-width: 1100px;
     width: 100%;
     margin: 0 auto;
 }
 
 /* ============================================================
-   HERO
+   TITRES
+   ============================================================ */
+h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--brun);
+    margin-bottom: 1rem;
+}
+
+.page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ============================================================
+   HERO — page d'accueil
    ============================================================ */
 .hero {
     background: var(--brun);
@@ -253,6 +211,18 @@ img { max-width: 100%; display: block; }
 }
 
 .btn-hero:hover { background: #D9733E; }
+
+.btn-voir-tout {
+    display: inline-block;
+    margin-top: 1.5rem;
+    border: 2px solid var(--brun);
+    color: var(--brun);
+    padding: 0.65rem 1.8rem;
+    border-radius: 50px;
+    font-weight: 500;
+}
+
+.btn-voir-tout:hover { background: var(--brun); color: var(--creme); }
 
 /* ============================================================
    GRILLE DE RECETTES
@@ -291,7 +261,8 @@ img { max-width: 100%; display: block; }
     flex-direction: column;
 }
 
-.card-body h2, .card-body h3 {
+.card-body h2,
+.card-body h3 {
     font-family: 'Playfair Display', serif;
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
@@ -326,20 +297,8 @@ img { max-width: 100%; display: block; }
     border-color: var(--terre);
 }
 
-.btn-voir-tout {
-    display: inline-block;
-    margin-top: 1.5rem;
-    border: 2px solid var(--brun);
-    color: var(--brun);
-    padding: 0.65rem 1.8rem;
-    border-radius: 50px;
-    font-weight: 500;
-}
-
-.btn-voir-tout:hover { background: var(--brun); color: var(--creme); }
-
 /* ============================================================
-   PAGE DETAIL RECETTE
+   PAGE DÉTAIL RECETTE
    ============================================================ */
 .recette-detail {
     background: var(--blanc);
@@ -348,7 +307,7 @@ img { max-width: 100%; display: block; }
     box-shadow: var(--shadow);
 }
 
-.recette-detail img {
+.recette-detail > img {
     width: 100%;
     max-height: 380px;
     object-fit: cover;
@@ -454,41 +413,20 @@ img { max-width: 100%; display: block; }
 
 .form-group input:focus,
 .form-group textarea:focus,
-.form-group select:focus {
-    border-color: var(--terre);
-}
+.form-group select:focus { border-color: var(--terre); }
 
-.form-group textarea { min-height: 110px; resize: vertical; }
+.form-group textarea           { min-height: 110px; resize: vertical; }
 .form-group input[type="file"] { font-size: 0.87rem; padding: 0.4rem; }
 
-/* cases a cocher */
-.checkboxes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-}
-
-.checkboxes label {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    background: var(--creme);
-    border: 1.5px solid var(--beige);
-    padding: 0.35rem 0.8rem;
-    border-radius: 50px;
-    cursor: pointer;
-    font-size: 0.87rem;
+.label-hint {
+    font-size: 0.76rem;
+    color: var(--gris);
     font-weight: 400;
     text-transform: none;
     letter-spacing: 0;
-    color: var(--brun);
+    margin-left: 0.3rem;
 }
 
-.checkboxes label:hover { border-color: var(--terre); }
-.checkboxes input[type="checkbox"] { accent-color: var(--terre); }
-
-/* bouton soumettre */
 button[type="submit"] {
     background: var(--terre);
     color: var(--blanc);
@@ -505,7 +443,7 @@ button[type="submit"] {
 button[type="submit"]:hover { background: #D9733E; }
 
 /* ============================================================
-   ERREURS
+   MESSAGES D'ERREUR
    ============================================================ */
 .erreur, #erreur-js, #erreur-form-js {
     background: #FEF0EC;
@@ -517,11 +455,176 @@ button[type="submit"]:hover { background: #D9733E; }
     margin-bottom: 1rem;
 }
 
-.erreurs { margin-bottom: 1rem; }
-.erreurs .erreur { margin-bottom: 0.4rem; }
+.erreurs          { margin-bottom: 1rem; }
+.erreurs .erreur  { margin-bottom: 0.4rem; }
 
 /* ============================================================
-   PAGE ADMIN
+   FILTRAGE CHECKBOXES — ingrédients & tags
+   ============================================================ */
+.filtre-wrap { margin-bottom: 0.6rem; }
+
+.filtre-wrap input[type="text"] {
+    width: 100%;
+    max-width: 360px;
+    padding: 0.55rem 1rem;
+    border: 1.5px solid var(--beige);
+    border-radius: 50px;
+    background: var(--blanc);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--brun);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.filtre-wrap input[type="text"]:focus {
+    border-color: var(--terre);
+    box-shadow: 0 0 0 3px rgba(196,98,45,0.10);
+}
+
+.checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--creme);
+    border: 1.5px solid var(--beige);
+    padding: 0.35rem 0.85rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 0.87rem;
+    font-weight: 400;
+    color: var(--brun);
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+}
+
+.checkbox-item:hover { border-color: var(--terre); }
+
+.checkbox-item input[type="checkbox"] {
+    accent-color: var(--terre);
+    cursor: pointer;
+}
+
+.checkbox-item:has(input:checked) {
+    background: #fdf0ea;
+    border-color: var(--terre);
+    color: var(--terre);
+    font-weight: 500;
+}
+
+/* ============================================================
+   NOUVEAUX INGRÉDIENTS — lignes dynamiques
+   ============================================================ */
+.new-ingredient-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-bottom: 0.7rem;
+    padding: 0.8rem 1rem;
+    background: var(--creme);
+    border: 1.5px solid var(--beige);
+    border-radius: var(--radius);
+    transition: border-color 0.2s;
+}
+
+.new-ingredient-row:focus-within { border-color: var(--terre); }
+
+.new-ingredient-fields {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.new-ing-nom {
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    border: 1.5px solid var(--beige);
+    border-radius: var(--radius);
+    background: var(--blanc);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    color: var(--brun);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.new-ing-nom:focus { border-color: var(--terre); }
+
+.new-ingredient-photo-wrap { display: flex; flex-direction: column; }
+.new-ing-photo { font-size: 0.85rem; padding: 0.3rem 0; }
+
+/* ============================================================
+   NOUVEAUX TAGS — lignes dynamiques
+   ============================================================ */
+.new-tag-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.6rem;
+}
+
+.new-tag-row input[type="text"] {
+    flex: 1;
+    max-width: 300px;
+    padding: 0.6rem 0.9rem;
+    border: 1.5px solid var(--beige);
+    border-radius: var(--radius);
+    background: var(--creme);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    color: var(--brun);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.new-tag-row input[type="text"]:focus { border-color: var(--terre); }
+
+.btn-suppr-row {
+    background: transparent;
+    border: 1.5px solid #E05252;
+    color: #E05252;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+    padding: 0;
+    font-family: inherit;
+}
+
+.btn-suppr-row:hover { background: #E05252; color: var(--blanc); }
+
+.btn-ajouter-ligne {
+    background: transparent;
+    border: 1.5px dashed var(--beige);
+    color: var(--gris);
+    padding: 0.5rem 1.2rem;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.87rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    margin-top: 0.2rem;
+}
+
+.btn-ajouter-ligne:hover { border-color: var(--terre); color: var(--terre); }
+
+/* ============================================================
+   PAGE ADMIN — tableau de bord
    ============================================================ */
 .admin-page h1 {
     font-family: 'Playfair Display', serif;
@@ -548,7 +651,72 @@ button[type="submit"]:hover { background: #D9733E; }
 
 .admin-actions .btn-admin:hover { background: var(--terre); }
 
-/* tableau admin */
+.admin-table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    margin-top: 0.5rem;
+}
+
+.admin-table-header h2 {
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.compteur-badge {
+    display: inline-block;
+    background: var(--beige);
+    color: var(--gris);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.2rem 0.7rem;
+    border-radius: 50px;
+    letter-spacing: 0;
+    text-transform: none;
+    vertical-align: middle;
+}
+
+.admin-search-wrap input[type="text"] {
+    padding: 0.55rem 1.1rem;
+    border: 1.5px solid var(--beige);
+    border-radius: 50px;
+    background: var(--blanc);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--brun);
+    outline: none;
+    width: 260px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.admin-search-wrap input[type="text"]:focus {
+    border-color: var(--terre);
+    box-shadow: 0 0 0 3px rgba(196,98,45,0.10);
+}
+
+.ingredient-search-wrap { margin-bottom: 0.8rem; }
+
+.ingredient-search-wrap input[type="text"] {
+    width: 100%;
+    max-width: 380px;
+    padding: 0.6rem 1rem;
+    border: 1.5px solid var(--beige);
+    border-radius: 50px;
+    background: var(--blanc);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    color: var(--brun);
+    outline: none;
+}
+
+.ingredient-search-wrap input:focus { border-color: var(--terre); }
+
 .admin-table {
     width: 100%;
     border-collapse: collapse;
@@ -577,41 +745,32 @@ button[type="submit"]:hover { background: #D9733E; }
 }
 
 .admin-table tr:last-child td { border-bottom: none; }
-.admin-table tr:hover td { background: var(--creme); }
+.admin-table tr:hover td      { background: var(--creme); }
 
-/* ============================================================
-   BOUTONS MODIFIER ET SUPPRIMER DANS LE TABLEAU
-   ============================================================ */
-.admin-table td .btn-modifier,
-.admin-table td .btn-supprimer {
-    display: inline-block; /* côte à côte */
+.btn-modifier {
+    display: inline-block;
     padding: 0.3rem 0.8rem;
     border-radius: 50px;
     font-size: 0.82rem;
     font-weight: 500;
-    margin-right: 0.5rem; /* espace entre les boutons */
-    text-align: center;
-}
-
-.btn-modifier {
+    margin-right: 0.5rem;
     background: var(--sauge);
     color: var(--blanc);
 }
-.btn-modifier:hover {
-    background: #7D9068;
-}
+
+.btn-modifier:hover { background: #7D9068; }
 
 .btn-supprimer {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.82rem;
+    font-weight: 500;
     border: 1.5px solid #E05252;
     color: #E05252;
-    background: transparent; /* plus de fond rouge */
-}
-.btn-supprimer:hover {
-    background: transparent; /* plus d'effet rouge */
-    color: #E05252;
+    background: transparent;
 }
 
-/* formulaire admin */
 .admin-form { max-width: 680px; }
 
 .admin-form h1 {
@@ -621,306 +780,69 @@ button[type="submit"]:hover { background: #D9733E; }
     padding-bottom: 1rem;
     border-bottom: 2px solid var(--beige);
 }
-/* ============================================================
-   TITRES
-   ============================================================ */
-h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    color: var(--brun);
-    margin-bottom: 1rem;
-}
-
-.page-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-}
-
-/* ============================================================
-   RECHERCHE INGREDIENTS
-   ============================================================ */
-.ingredient-search-wrap { margin-bottom: 0.8rem; }
-
-.ingredient-search-wrap input[type="text"] {
-    width: 100%;
-    max-width: 380px;
-    padding: 0.6rem 1rem;
-    border: 1.5px solid var(--beige);
-    border-radius: 50px;
-    background: var(--blanc);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.92rem;
-    color: var(--brun);
-    outline: none;
-}
-
-.ingredient-search-wrap input:focus { border-color: var(--terre); }
 
 /* ============================================================
    FOOTER
-   se decale aussi quand sidebar ouverte
    ============================================================ */
 .site-footer {
     background: var(--brun);
     color: #A3B08F;
-    text-align: center;
-    padding: 1.2rem 2rem;
+    padding: 2.5rem 2rem 1.5rem;
     font-size: 0.85rem;
-    line-height: 1.8;
-    transition: margin-left 0.3s ease;
-    margin-left: 0;
+    line-height: 1.7;
 }
 
-.site-footer.decale {
-    margin-left: var(--sidebar-w);
+.footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: 2rem;
 }
+
+.footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--creme);
+    display: block;
+    margin-bottom: 0.4rem;
+}
+
+.footer-brand p { font-size: 0.82rem; color: #A3B08F; }
+
+.footer-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.footer-nav strong,
+.footer-sources strong {
+    color: var(--creme);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.4rem;
+    display: block;
+}
+
+.footer-nav a              { color: #A3B08F; font-size: 0.84rem; transition: color 0.2s; }
+.footer-nav a:hover        { color: var(--creme); }
+.footer-sources p          { font-size: 0.81rem; color: #8A9E7A; margin-bottom: 0.3rem; }
+.footer-sources a          { color: #A3B08F; text-decoration: underline; text-underline-offset: 2px; }
+.footer-sources a:hover    { color: var(--creme); }
 
 /* ============================================================
-   MESSAGE AUCUNE RECETTE
-   ============================================================ */
-.recipes-page > p {
-    background: var(--blanc);
-    border: 1.5px dashed var(--beige);
-    padding: 2rem;
-    border-radius: var(--radius);
-    text-align: center;
-    color: var(--gris);
-}
-
-/* ============================================================
-   RESPONSIVE MOBILE
+   RESPONSIVE
    ============================================================ */
 @media (max-width: 768px) {
-    .site-main { padding: 1.2rem 1rem; }
-    .hero { padding: 2rem 1.5rem; }
-    .hero h1 { font-size: 1.8rem; }
-    .recipes-grid { grid-template-columns: 1fr; }
-    .admin-actions { flex-direction: column; }
-}
-/* ============================================================
-   À COLLER À LA FIN DE style.css
-   ============================================================ */
-
-/* ---- Dropdown autocomplete — fond blanc explicite ---- */
-.autocomplete-dropdown {
-    display: none;
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    right: 0;
-    background: #ffffff;          /* blanc pur, pas de variable */
-    border: 1.5px solid var(--beige);
-    border-radius: var(--radius);
-    box-shadow: 0 8px 24px rgba(44, 26, 14, 0.12);
-    z-index: 200;
-    list-style: none;
-    padding: 0.4rem 0;
-    max-height: 220px;
-    overflow-y: auto;
-}
-
-.autocomplete-dropdown li {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-    color: var(--brun);
-    cursor: pointer;
-    background: #ffffff;          /* fond blanc sur chaque ligne */
-    transition: background 0.15s;
-    font-family: 'DM Sans', sans-serif;
-}
-
-.autocomplete-dropdown li:hover {
-    background: #FAF6F0;          /* léger fond crème au survol */
-    color: var(--terre);
-}
-
-.autocomplete-dropdown li.autocomplete-create {
-    color: var(--sauge);
-    font-weight: 500;
-    border-top: 1px solid var(--beige);
-    margin-top: 0.2rem;
-    padding-top: 0.7rem;
-    background: #ffffff;
-}
-
-.autocomplete-dropdown li.autocomplete-create:hover {
-    background: #f0f5ec;
-    color: var(--sauge);
-}
-
-/* ---- Wrapper autocomplete ---- */
-.autocomplete-group .autocomplete-wrapper {
-    background: #ffffff;          /* fond blanc */
-    border: 1.5px solid var(--beige);
-    border-radius: var(--radius);
-    padding: 0.6rem 0.75rem;
-    position: relative;
-    transition: border-color 0.2s;
-}
-
-.autocomplete-group .autocomplete-wrapper:focus-within {
-    border-color: var(--terre);
-    box-shadow: 0 0 0 3px rgba(196, 98, 45, 0.10);
-}
-
-/* ---- Chips ---- */
-.chips-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    margin-bottom: 0.5rem;
-}
-
-.chips-container:empty { margin-bottom: 0; }
-
-.chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    background: var(--terre);
-    color: #ffffff;
-    padding: 0.3rem 0.7rem 0.3rem 0.9rem;
-    border-radius: 50px;
-    font-size: 0.84rem;
-    font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
-    animation: chipIn 0.18s ease;
-}
-
-@keyframes chipIn {
-    from { transform: scale(0.7); opacity: 0; }
-    to   { transform: scale(1);   opacity: 1; }
-}
-
-.chip-remove {
-    background: rgba(255, 255, 255, 0.25);
-    border: none;
-    color: #ffffff;
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    cursor: pointer;
-    padding: 0;
-    line-height: 1;
-    font-family: inherit;
-    transition: background 0.15s;
-}
-
-.chip-remove:hover { background: rgba(255, 255, 255, 0.45); }
-
-/* ---- Input dans le wrapper ---- */
-.autocomplete-input-wrap { position: relative; }
-
-.autocomplete-input-wrap input[type="text"] {
-    width: 100%;
-    border: none;
-    background: transparent;
-    outline: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.92rem;
-    color: var(--brun);
-    padding: 0.3rem 0;
-}
-
-.autocomplete-input-wrap input[type="text"]::placeholder {
-    color: var(--gris);
-    opacity: 0.8;
-}
-
-/* ---- Hint ---- */
-.autocomplete-hint {
-    font-size: 0.78rem;
-    color: var(--gris);
-    margin-top: 0.45rem;
-    font-family: 'DM Sans', sans-serif;
-}
-
-.autocomplete-hint kbd {
-    background: var(--beige);
-    border: 1px solid #d4c8b4;
-    border-radius: 4px;
-    padding: 0 5px;
-    font-size: 0.75rem;
-    font-family: inherit;
-    color: var(--brun);
-}
-
-/* ---- Ingrédients actuels (page modifier) ---- */
-.ingredients-actuels {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-top: 0.4rem;
-}
-
-.ingredient-actuel-item {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    background: var(--creme);
-    border: 1.5px solid var(--beige);
-    padding: 0.35rem 0.8rem 0.35rem 0.4rem;
-    border-radius: 50px;
-    font-size: 0.88rem;
-    color: var(--brun);
-}/* ============================================================
-   ADMIN — en-tête tableau + barre de recherche recettes
-   À ajouter à la fin de style.css
-   ============================================================ */
-
-/* ligne titre + barre de recherche côte à côte */
-.admin-table-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-    margin-top: 0.5rem;
-}
-
-.admin-table-header h2 {
-    margin-bottom: 0; /* annule le margin-bottom global du h2 */
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-}
-
-/* badge compteur à côté du titre */
-.compteur-badge {
-    display: inline-block;
-    background: var(--beige);
-    color: var(--gris);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 500;
-    padding: 0.2rem 0.7rem;
-    border-radius: 50px;
-    letter-spacing: 0;
-    text-transform: none;
-    vertical-align: middle;
-}
-
-/* barre de recherche recettes */
-.admin-search-wrap input[type="text"] {
-    padding: 0.55rem 1.1rem;
-    border: 1.5px solid var(--beige);
-    border-radius: 50px;
-    background: var(--blanc);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    color: var(--brun);
-    outline: none;
-    width: 260px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.admin-search-wrap input[type="text"]:focus {
-    border-color: var(--terre);
-    box-shadow: 0 0 0 3px rgba(196, 98, 45, 0.10);
+    .site-header    { padding: 0.8rem 1rem; gap: 0.7rem; }
+    .header-nav     { display: none; }
+    .site-title     { font-size: 1.1rem; }
+    .site-main      { padding: 1.2rem 1rem; }
+    .hero           { padding: 2rem 1.5rem; }
+    .hero h1        { font-size: 1.8rem; }
+    .recipes-grid   { grid-template-columns: 1fr; }
+    .admin-actions  { flex-direction: column; }
+    .footer-inner   { grid-template-columns: 1fr; gap: 1.2rem; }
 }
