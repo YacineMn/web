@@ -95,7 +95,7 @@ $ingredients = $ingredientObj->getAll();
             <input
                 type="text"
                 id="recherche-ingredients"
-                placeholder="🔍  Rechercher un ingrédient…"
+                placeholder="  Rechercher un ingrédient…"
                 autocomplete="off">
         </div>
     </div>
@@ -181,6 +181,7 @@ document.addEventListener("DOMContentLoaded", function(){
     /* ---- Recherche en temps réel ---- */
     var searchInput = document.getElementById("recherche-ingredients");
     var rows        = document.querySelectorAll("#table-ingredients tbody tr");
+    
     var compteur    = document.getElementById("compteur-ingredients");
     var aucun       = document.getElementById("aucun-resultat");
     var total       = rows.length;

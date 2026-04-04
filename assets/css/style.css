@@ -1,44 +1,37 @@
 /* ============================================================
    TasteLab — CSS Principal
-   Thème : Cuisine moderne, chaleureux, épuré
-   Palette : crème, terre cuite, vert sauge, brun profond
+   Simple, propre, niveau L2
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');
 
 /* ---- Variables ---- */
 :root {
-    --creme:       #FAF6F0;
-    --brun:        #2C1A0E;
-    --terre:       #C4622D;
-    --terre-light: #E8835A;
-    --sauge:       #6B7C5C;
-    --sauge-light: #A3B08F;
-    --beige:       #EDE0CC;
-    --gris:        #7A6E65;
-    --blanc:       #FFFFFF;
-    --sidebar-w:   260px;
-    --radius:      12px;
-    --shadow:      0 4px 24px rgba(44,26,14,0.10);
-    --transition:  0.25s ease;
+    --creme:      #FAF6F0;
+    --brun:       #2C1A0E;
+    --terre:      #C4622D;
+    --beige:      #EDE0CC;
+    --sauge:      #6B7C5C;
+    --gris:       #7A6E65;
+    --blanc:      #FFFFFF;
+    --sidebar-w:  260px;
+    --radius:     10px;
+    --shadow:     0 2px 12px rgba(0,0,0,0.08);
 }
 
-/* ---- Reset ---- */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; scroll-behavior: smooth; }
+/* ---- Reset de base ---- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
     font-family: 'DM Sans', sans-serif;
-    background-color: var(--creme);
+    background: var(--creme);
     color: var(--brun);
     min-height: 100vh;
 }
-
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
-ul { list-style: none; }
 
 /* ============================================================
-   LAYOUT GENERAL
+   LAYOUT
    ============================================================ */
 .layout {
     display: flex;
@@ -47,61 +40,54 @@ ul { list-style: none; }
 
 /* ============================================================
    SIDEBAR
+   cachee par defaut — s ouvre au clic sur le burger
    ============================================================ */
 .sidebar {
     width: var(--sidebar-w);
-    background-color: var(--brun);
-    display: flex;
-    flex-direction: column;
-    padding: 2rem 1.5rem;
+    background: var(--brun);
     position: fixed;
-    top: 0; left: 0;
+    top: 0;
+    left: -260px; /* cachee par defaut */
     height: 100vh;
     z-index: 100;
-    box-shadow: 4px 0 20px rgba(44,26,14,0.15);
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: left 0.3s ease;
+}
+
+/* classe ajoutee par JS quand on ouvre la sidebar */
+.sidebar.ouverte {
+    left: 0;
 }
 
 .sidebar-logo a {
     font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    font-weight: 700;
+    font-size: 1.6rem;
     color: var(--creme);
-    letter-spacing: -0.5px;
     display: block;
-    margin-bottom: 0.3rem;
-}
-
-.sidebar-logo::after {
-    content: '';
-    display: block;
-    width: 40px;
-    height: 3px;
-    background: var(--terre);
-    border-radius: 2px;
-    margin: 1rem 0 2rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--terre);
+    padding-bottom: 1rem;
 }
 
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
-    flex: 1;
+    gap: 0.5rem;
 }
 
 .sidebar-link {
-    color: var(--sauge-light);
+    color: #A3B08F;
     font-size: 0.95rem;
-    font-weight: 400;
-    padding: 0.75rem 1rem;
+    padding: 0.7rem 1rem;
     border-radius: var(--radius);
-    transition: var(--transition);
-    letter-spacing: 0.3px;
+    transition: background 0.2s, color 0.2s;
 }
 
 .sidebar-link:hover {
-    background: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.1);
     color: var(--creme);
-    padding-left: 1.4rem;
 }
 
 .sidebar-link.active {
@@ -111,13 +97,20 @@ ul { list-style: none; }
 
 /* ============================================================
    MAIN WRAPPER
+   se decale quand la sidebar est ouverte
    ============================================================ */
 .main-wrapper {
-    margin-left: var(--sidebar-w);
     flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    margin-left: 0;
+    transition: margin-left 0.3s ease;
+}
+
+/* classe ajoutee par JS en meme temps que sidebar.ouverte */
+.main-wrapper.decale {
+    margin-left: var(--sidebar-w);
 }
 
 /* ============================================================
@@ -125,10 +118,10 @@ ul { list-style: none; }
    ============================================================ */
 .site-header {
     background: var(--blanc);
-    padding: 1rem 2rem;
+    padding: 1rem 1.5rem;
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
     border-bottom: 1px solid var(--beige);
     position: sticky;
     top: 0;
@@ -136,7 +129,22 @@ ul { list-style: none; }
     box-shadow: var(--shadow);
 }
 
-/* Barre de recherche */
+/* bouton burger */
+#burger {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: var(--brun);
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+#burger:hover { background: var(--beige); }
+
+/* barre de recherche */
 .header-search {
     flex: 1;
     display: flex;
@@ -145,21 +153,17 @@ ul { list-style: none; }
     background: var(--creme);
     border: 1.5px solid var(--beige);
     border-radius: 50px;
-    padding: 0.4rem 0.4rem 0.4rem 1.2rem;
-    transition: var(--transition);
+    padding: 0.4rem 0.4rem 0.4rem 1rem;
 }
 
-.header-search:focus-within {
-    border-color: var(--terre);
-    box-shadow: 0 0 0 3px rgba(196,98,45,0.12);
-}
+.header-search:focus-within { border-color: var(--terre); }
 
 .header-search input {
     border: none;
     background: transparent;
     outline: none;
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: var(--brun);
     width: 100%;
 }
@@ -171,46 +175,38 @@ ul { list-style: none; }
     color: var(--blanc);
     border: none;
     border-radius: 50px;
-    padding: 0.5rem 1.2rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: var(--transition);
-    white-space: nowrap;
-}
-
-.header-search button:hover { background: var(--terre-light); }
-
-/* Boutons admin dans le header */
-.header-admin { display: flex; gap: 0.7rem; align-items: center; }
-
-.btn-login, .btn-admin, .btn-logout {
-    padding: 0.5rem 1.1rem;
-    border-radius: 50px;
+    padding: 0.45rem 1rem;
     font-size: 0.88rem;
     font-weight: 500;
-    transition: var(--transition);
+    cursor: pointer;
     white-space: nowrap;
 }
 
-.btn-login {
-    border: 1.5px solid var(--beige);
-    color: var(--gris);
+.header-search button:hover { background: #D9733E; }
+
+/* liens admin dans le header */
+.header-admin {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-shrink: 0;
 }
+
+.btn-login, .btn-admin, .btn-logout {
+    padding: 0.45rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.btn-login { border: 1.5px solid var(--beige); color: var(--gris); }
 .btn-login:hover { border-color: var(--terre); color: var(--terre); }
 
-.btn-admin {
-    background: var(--sauge);
-    color: var(--blanc);
-}
-.btn-admin:hover { background: var(--sauge-light); }
+.btn-admin { background: var(--sauge); color: var(--blanc); }
+.btn-admin:hover { background: #7D9068; }
 
-.btn-logout {
-    background: transparent;
-    border: 1.5px solid var(--terre);
-    color: var(--terre);
-}
+.btn-logout { border: 1.5px solid var(--terre); color: var(--terre); }
 .btn-logout:hover { background: var(--terre); color: var(--blanc); }
 
 /* ============================================================
@@ -218,125 +214,52 @@ ul { list-style: none; }
    ============================================================ */
 .site-main {
     flex: 1;
-    padding: 2.5rem 2rem;
+    padding: 2rem 1.5rem;
     max-width: 1100px;
     width: 100%;
     margin: 0 auto;
 }
 
 /* ============================================================
-   HERO — PAGE ACCUEIL
+   HERO
    ============================================================ */
 .hero {
-    background: linear-gradient(135deg, var(--brun) 0%, #4A2C1A 100%);
-    border-radius: 20px;
-    padding: 3.5rem 3rem;
-    margin-bottom: 2.5rem;
-    position: relative;
-    overflow: hidden;
-}
-
-.hero::before {
-    content: '🍳';
-    position: absolute;
-    right: 2rem;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 8rem;
-    opacity: 0.1;
+    background: var(--brun);
+    border-radius: 16px;
+    padding: 3rem 2.5rem;
+    margin-bottom: 2rem;
 }
 
 .hero h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 2.8rem;
+    font-size: 2.4rem;
     color: var(--creme);
-    line-height: 1.2;
     margin-bottom: 0.8rem;
 }
 
 .hero p {
-    color: var(--sauge-light);
-    font-size: 1.05rem;
-    margin-bottom: 1.8rem;
-    max-width: 500px;
+    color: #A3B08F;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .btn-hero {
     display: inline-block;
     background: var(--terre);
     color: var(--blanc);
-    padding: 0.8rem 2rem;
+    padding: 0.7rem 1.8rem;
     border-radius: 50px;
     font-weight: 500;
-    font-size: 0.95rem;
-    transition: var(--transition);
-}
-.btn-hero:hover {
-    background: var(--terre-light);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(196,98,45,0.3);
 }
 
-/* ============================================================
-   SECTION RECHERCHE AVANCEE
-   ============================================================ */
-.recherche-avancee {
-    background: var(--blanc);
-    border-radius: var(--radius);
-    padding: 1.5rem 2rem;
-    margin-bottom: 2.5rem;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--beige);
-}
-
-.recherche-avancee form {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.recherche-avancee select {
-    flex: 1;
-    min-width: 180px;
-    padding: 0.65rem 1rem;
-    border: 1.5px solid var(--beige);
-    border-radius: var(--radius);
-    background: var(--creme);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    color: var(--brun);
-    outline: none;
-    cursor: pointer;
-    transition: var(--transition);
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A6E65' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    padding-right: 2.5rem;
-}
-
-.recherche-avancee select:focus { border-color: var(--terre); }
-
-.recherche-avancee button {
-    background: var(--terre);
-    color: var(--blanc);
-    border: none;
-    padding: 0.65rem 1.8rem;
-    border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    transition: var(--transition);
-}
-.recherche-avancee button:hover { background: var(--terre-light); }
+.btn-hero:hover { background: #D9733E; }
 
 /* ============================================================
    GRILLE DE RECETTES
    ============================================================ */
 .recipes-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5rem;
     margin-top: 1.5rem;
 }
@@ -347,19 +270,16 @@ ul { list-style: none; }
     overflow: hidden;
     box-shadow: var(--shadow);
     border: 1px solid var(--beige);
-    transition: var(--transition);
     display: flex;
     flex-direction: column;
+    transition: transform 0.2s;
 }
 
-.recipe-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(44,26,14,0.15);
-}
+.recipe-card:hover { transform: translateY(-3px); }
 
 .recipe-card img {
     width: 100%;
-    height: 180px;
+    height: 170px;
     object-fit: cover;
     background: var(--beige);
 }
@@ -373,13 +293,12 @@ ul { list-style: none; }
 
 .card-body h2, .card-body h3 {
     font-family: 'Playfair Display', serif;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     margin-bottom: 0.5rem;
-    color: var(--brun);
 }
 
 .card-body p {
-    font-size: 0.88rem;
+    font-size: 0.87rem;
     color: var(--gris);
     line-height: 1.5;
     flex: 1;
@@ -392,112 +311,106 @@ ul { list-style: none; }
 
 .recipe-link {
     display: inline-block;
-    background: var(--creme);
     border: 1.5px solid var(--beige);
     color: var(--terre);
-    padding: 0.5rem 1.1rem;
+    padding: 0.45rem 1rem;
     border-radius: 50px;
-    font-size: 0.85rem;
+    font-size: 0.84rem;
     font-weight: 500;
-    transition: var(--transition);
     align-self: flex-start;
 }
+
 .recipe-link:hover {
     background: var(--terre);
     color: var(--blanc);
     border-color: var(--terre);
 }
 
-/* Lien voir tout */
 .btn-voir-tout {
     display: inline-block;
-    margin-top: 2rem;
-    background: transparent;
+    margin-top: 1.5rem;
     border: 2px solid var(--brun);
     color: var(--brun);
-    padding: 0.7rem 2rem;
+    padding: 0.65rem 1.8rem;
     border-radius: 50px;
     font-weight: 500;
-    transition: var(--transition);
 }
-.btn-voir-tout:hover {
-    background: var(--brun);
-    color: var(--creme);
-}
+
+.btn-voir-tout:hover { background: var(--brun); color: var(--creme); }
 
 /* ============================================================
    PAGE DETAIL RECETTE
    ============================================================ */
 .recette-detail {
     background: var(--blanc);
-    border-radius: 20px;
+    border-radius: 16px;
     overflow: hidden;
     box-shadow: var(--shadow);
 }
 
 .recette-detail img {
     width: 100%;
-    max-height: 400px;
+    max-height: 380px;
     object-fit: cover;
 }
 
-.recette-detail-body { padding: 2.5rem; }
+.recette-detail-body { padding: 2rem; }
 
 .recette-detail h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 2.2rem;
+    font-size: 2rem;
     margin-bottom: 1rem;
 }
 
 .recette-detail p {
     color: var(--gris);
     line-height: 1.7;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .recette-detail h3 {
     font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
+    font-size: 1.15rem;
     color: var(--terre);
+    margin-bottom: 0.8rem;
 }
 
 .recette-detail ul {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-bottom: 2rem;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
     list-style: none;
 }
 
 .recette-detail ul li {
     background: var(--creme);
     border: 1px solid var(--beige);
-    padding: 0.4rem 0.9rem;
+    padding: 0.35rem 0.8rem;
     border-radius: 50px;
-    font-size: 0.88rem;
-    color: var(--brun);
+    font-size: 0.87rem;
 }
 
-/* Tags */
-.tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .tag {
+    display: inline-block;
     background: var(--sauge);
     color: var(--blanc);
-    padding: 0.3rem 0.8rem;
+    padding: 0.3rem 0.75rem;
     border-radius: 50px;
     font-size: 0.8rem;
     font-weight: 500;
+    margin-right: 0.4rem;
+    margin-bottom: 0.4rem;
 }
 
 /* ============================================================
    PAGE LOGIN
    ============================================================ */
 .login-page {
-    max-width: 420px;
+    max-width: 400px;
     margin: 3rem auto;
     background: var(--blanc);
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 2.5rem;
     box-shadow: var(--shadow);
     border: 1px solid var(--beige);
@@ -505,77 +418,54 @@ ul { list-style: none; }
 
 .login-page h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
-}
-
-.login-page::before {
-    content: 'Administration';
-    display: block;
-    font-size: 0.8rem;
-    color: var(--terre);
-    font-weight: 500;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 0.3rem;
+    font-size: 1.7rem;
+    margin-bottom: 1.5rem;
 }
 
 /* ============================================================
-   FORMULAIRES GENERAUX
+   FORMULAIRES
    ============================================================ */
-.form-group {
-    margin-bottom: 1.3rem;
-}
+.form-group { margin-bottom: 1.2rem; }
 
 .form-group label {
     display: block;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     font-weight: 500;
     color: var(--gris);
     margin-bottom: 0.4rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
 }
 
 .form-group input[type="text"],
 .form-group input[type="password"],
-.form-group input[type="email"],
 .form-group textarea,
 .form-group select {
     width: 100%;
-    padding: 0.75rem 1rem;
+    padding: 0.7rem 1rem;
     border: 1.5px solid var(--beige);
     border-radius: var(--radius);
     background: var(--creme);
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
+    font-size: 0.93rem;
     color: var(--brun);
     outline: none;
-    transition: var(--transition);
 }
 
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
     border-color: var(--terre);
-    box-shadow: 0 0 0 3px rgba(196,98,45,0.1);
 }
 
-.form-group textarea {
-    min-height: 120px;
-    resize: vertical;
-}
+.form-group textarea { min-height: 110px; resize: vertical; }
+.form-group input[type="file"] { font-size: 0.87rem; padding: 0.4rem; }
 
-.form-group input[type="file"] {
-    padding: 0.5rem;
-    font-size: 0.88rem;
-}
-
-/* Cases a cocher */
+/* cases a cocher */
 .checkboxes {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem;
+    gap: 0.5rem;
     margin-top: 0.5rem;
 }
 
@@ -585,71 +475,57 @@ ul { list-style: none; }
     gap: 0.4rem;
     background: var(--creme);
     border: 1.5px solid var(--beige);
-    padding: 0.4rem 0.9rem;
+    padding: 0.35rem 0.8rem;
     border-radius: 50px;
     cursor: pointer;
-    font-size: 0.88rem;
+    font-size: 0.87rem;
     font-weight: 400;
     text-transform: none;
     letter-spacing: 0;
-    transition: var(--transition);
     color: var(--brun);
 }
 
 .checkboxes label:hover { border-color: var(--terre); }
 .checkboxes input[type="checkbox"] { accent-color: var(--terre); }
 
-/* Bouton submit */
+/* bouton soumettre */
 button[type="submit"] {
     background: var(--terre);
     color: var(--blanc);
     border: none;
-    padding: 0.8rem 2rem;
+    padding: 0.75rem 1.8rem;
     border-radius: 50px;
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
+    font-size: 0.93rem;
     font-weight: 500;
     cursor: pointer;
-    transition: var(--transition);
     margin-right: 0.8rem;
 }
 
-button[type="submit"]:hover {
-    background: var(--terre-light);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(196,98,45,0.25);
-}
-
-/* Lien annuler */
-a.annuler, section a:not(.recipe-link):not(.btn-hero):not(.btn-voir-tout) {
-    color: var(--gris);
-    font-size: 0.9rem;
-    text-decoration: underline;
-    transition: var(--transition);
-}
+button[type="submit"]:hover { background: #D9733E; }
 
 /* ============================================================
-   MESSAGES D'ERREUR ET VALIDATION
+   ERREURS
    ============================================================ */
-.erreur, #erreur-js {
+.erreur, #erreur-js, #erreur-form-js {
     background: #FEF0EC;
     border: 1.5px solid var(--terre);
     color: var(--terre);
-    padding: 0.75rem 1rem;
+    padding: 0.7rem 1rem;
     border-radius: var(--radius);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     margin-bottom: 1rem;
 }
 
-.erreurs { margin-bottom: 1.2rem; }
-.erreurs .erreur { margin-bottom: 0.5rem; }
+.erreurs { margin-bottom: 1rem; }
+.erreurs .erreur { margin-bottom: 0.4rem; }
 
 /* ============================================================
    PAGE ADMIN
    ============================================================ */
 .admin-page h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 2rem;
+    font-size: 1.8rem;
     margin-bottom: 1.5rem;
 }
 
@@ -657,24 +533,21 @@ a.annuler, section a:not(.recipe-link):not(.btn-hero):not(.btn-voir-tout) {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
 }
 
 .admin-actions .btn-admin {
     background: var(--brun);
     color: var(--creme);
-    padding: 0.7rem 1.5rem;
+    padding: 0.65rem 1.4rem;
     border-radius: var(--radius);
     font-size: 0.9rem;
     font-weight: 500;
-    transition: var(--transition);
-}
-.admin-actions .btn-admin:hover {
-    background: var(--terre);
-    transform: translateY(-2px);
 }
 
-/* Tableau admin */
+.admin-actions .btn-admin:hover { background: var(--terre); }
+
+/* tableau admin */
 .admin-table {
     width: 100%;
     border-collapse: collapse;
@@ -684,589 +557,125 @@ a.annuler, section a:not(.recipe-link):not(.btn-hero):not(.btn-voir-tout) {
     box-shadow: var(--shadow);
 }
 
-.admin-table thead {
-    background: var(--brun);
-    color: var(--creme);
-}
+.admin-table thead { background: var(--brun); color: var(--creme); }
 
 .admin-table th {
-    padding: 1rem 1.2rem;
+    padding: 0.9rem 1.1rem;
     text-align: left;
-    font-size: 0.85rem;
+    font-size: 0.83rem;
     font-weight: 500;
-    letter-spacing: 0.5px;
     text-transform: uppercase;
+    letter-spacing: 0.4px;
 }
 
 .admin-table td {
-    padding: 1rem 1.2rem;
+    padding: 0.9rem 1.1rem;
     border-bottom: 1px solid var(--beige);
-    font-size: 0.92rem;
-    color: var(--brun);
+    font-size: 0.9rem;
     vertical-align: middle;
 }
 
 .admin-table tr:last-child td { border-bottom: none; }
 .admin-table tr:hover td { background: var(--creme); }
 
-/* Boutons modifier et supprimer */
 .btn-modifier, .btn-supprimer {
-    padding: 0.35rem 0.9rem;
+    padding: 0.3rem 0.8rem;
     border-radius: 50px;
     font-size: 0.82rem;
     font-weight: 500;
-    transition: var(--transition);
-    margin-right: 0.4rem;
+    margin-right: 0.3rem;
 }
 
-.btn-modifier {
-    background: var(--sauge);
-    color: var(--blanc);
-}
-.btn-modifier:hover { background: var(--sauge-light); }
+.btn-modifier { background: var(--sauge); color: var(--blanc); }
+.btn-modifier:hover { background: #7D9068; }
 
-.btn-supprimer {
-    background: transparent;
-    border: 1.5px solid #E05252;
-    color: #E05252;
-}
+.btn-supprimer { border: 1.5px solid #E05252; color: #E05252; }
 .btn-supprimer:hover { background: #E05252; color: var(--blanc); }
 
-/* Section admin form */
-.admin-form {
-    max-width: 700px;
-}
+.admin-form { max-width: 680px; }
 
 .admin-form h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    margin-bottom: 2rem;
+    font-size: 1.7rem;
+    margin-bottom: 1.8rem;
     padding-bottom: 1rem;
     border-bottom: 2px solid var(--beige);
 }
 
 /* ============================================================
-   TITRES DE SECTIONS
+   TITRES
    ============================================================ */
 h2 {
     font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     color: var(--brun);
-    margin-bottom: 1.2rem;
+    margin-bottom: 1rem;
 }
 
 .page-title {
     font-family: 'Playfair Display', serif;
-    font-size: 2rem;
+    font-size: 1.8rem;
     margin-bottom: 1.5rem;
+}
+
+/* ============================================================
+   RECHERCHE INGREDIENTS
+   ============================================================ */
+.ingredient-search-wrap { margin-bottom: 0.8rem; }
+
+.ingredient-search-wrap input[type="text"] {
+    width: 100%;
+    max-width: 380px;
+    padding: 0.6rem 1rem;
+    border: 1.5px solid var(--beige);
+    border-radius: 50px;
+    background: var(--blanc);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
     color: var(--brun);
+    outline: none;
+}
+
+.ingredient-search-wrap input:focus { border-color: var(--terre); }
+
+/* ============================================================
+   FOOTER
+   se decale aussi quand sidebar ouverte
+   ============================================================ */
+.site-footer {
+    background: var(--brun);
+    color: #A3B08F;
+    text-align: center;
+    padding: 1.2rem 2rem;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    transition: margin-left 0.3s ease;
+    margin-left: 0;
+}
+
+.site-footer.decale {
+    margin-left: var(--sidebar-w);
 }
 
 /* ============================================================
    MESSAGE AUCUNE RECETTE
    ============================================================ */
-.recipes-page p, .recettes-apercu p {
+.recipes-page > p {
     background: var(--blanc);
     border: 1.5px dashed var(--beige);
     padding: 2rem;
     border-radius: var(--radius);
     text-align: center;
     color: var(--gris);
-    font-size: 0.95rem;
 }
 
 /* ============================================================
-   FOOTER
-   ============================================================ */
-.site-footer {
-    background: var(--brun);
-    color: var(--sauge-light);
-    text-align: center;
-    padding: 1.5rem 2rem;
-    font-size: 0.85rem;
-    line-height: 1.8;
-    margin-left: var(--sidebar-w);
-}
-
-.site-footer p { margin: 0; }
-
-/* ============================================================
-   RESPONSIVE
+   RESPONSIVE MOBILE
    ============================================================ */
 @media (max-width: 768px) {
-    :root { --sidebar-w: 0px; }
-
-    .sidebar {
-        display: none;
-    }
-
-    .site-main { padding: 1.5rem 1rem; }
-
+    .site-main { padding: 1.2rem 1rem; }
     .hero { padding: 2rem 1.5rem; }
     .hero h1 { font-size: 1.8rem; }
-
-    .recherche-avancee form { flex-direction: column; }
-
     .recipes-grid { grid-template-columns: 1fr; }
-
     .admin-actions { flex-direction: column; }
-
-    .site-footer { margin-left: 0; }
-}
-/* ============================================================
-   AUTOCOMPLÉTION — Chips + Dropdown
-   À ajouter à la fin de style.css
-   ============================================================ */
-
-/* Wrapper global du composant */
-.autocomplete-group .autocomplete-wrapper {
-    background: var(--creme);
-    border: 1.5px solid var(--beige);
-    border-radius: var(--radius);
-    padding: 0.6rem 0.75rem;
-    transition: var(--transition);
-    position: relative;
-}
-
-.autocomplete-group .autocomplete-wrapper:focus-within {
-    border-color: var(--terre);
-    box-shadow: 0 0 0 3px rgba(196, 98, 45, 0.10);
-}
-
-/* Zone des chips sélectionnées */
-.chips-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    margin-bottom: 0.5rem;
-}
-
-.chips-container:empty {
-    margin-bottom: 0;
-}
-
-/* Un chip individuel */
-.chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    background: var(--terre);
-    color: var(--blanc);
-    padding: 0.3rem 0.7rem 0.3rem 0.9rem;
-    border-radius: 50px;
-    font-size: 0.84rem;
-    font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
-    animation: chipIn 0.18s ease;
-}
-
-@keyframes chipIn {
-    from { transform: scale(0.7); opacity: 0; }
-    to   { transform: scale(1);   opacity: 1; }
-}
-
-/* Bouton × pour retirer un chip */
-.chip-remove {
-    background: rgba(255, 255, 255, 0.25);
-    border: none;
-    color: var(--blanc);
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    cursor: pointer;
-    padding: 0;
-    line-height: 1;
-    transition: background var(--transition);
-    font-family: inherit;
-}
-
-.chip-remove:hover {
-    background: rgba(255, 255, 255, 0.45);
-}
-
-/* Input de recherche dans le wrapper */
-.autocomplete-input-wrap {
-    position: relative;
-}
-
-.autocomplete-input-wrap input[type="text"] {
-    width: 100%;
-    border: none;
-    background: transparent;
-    outline: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.93rem;
-    color: var(--brun);
-    padding: 0.3rem 0;
-}
-
-.autocomplete-input-wrap input[type="text"]::placeholder {
-    color: var(--gris);
-    opacity: 0.8;
-}
-
-/* Dropdown de suggestions */
-.autocomplete-dropdown {
-    display: none;
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    right: 0;
-    background: var(--blanc);
-    border: 1.5px solid var(--beige);
-    border-radius: var(--radius);
-    box-shadow: 0 8px 24px rgba(44, 26, 14, 0.12);
-    z-index: 200;
-    list-style: none;
-    padding: 0.4rem 0;
-    max-height: 220px;
-    overflow-y: auto;
-}
-
-.autocomplete-dropdown li {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-    color: var(--brun);
-    cursor: pointer;
-    transition: background var(--transition);
-    font-family: 'DM Sans', sans-serif;
-}
-
-.autocomplete-dropdown li:hover {
-    background: var(--creme);
-    color: var(--terre);
-}
-
-/* Option "créer" — mise en valeur différente */
-.autocomplete-dropdown li.autocomplete-create {
-    color: var(--sauge);
-    font-weight: 500;
-    border-top: 1px solid var(--beige);
-    margin-top: 0.2rem;
-    padding-top: 0.7rem;
-}
-
-.autocomplete-dropdown li.autocomplete-create:hover {
-    background: #f0f5ec;
-    color: var(--sauge);
-}
-
-/* Hint sous le champ */
-.autocomplete-hint {
-    font-size: 0.78rem;
-    color: var(--gris);
-    margin-top: 0.45rem;
-    font-family: 'DM Sans', sans-serif;
-}
-
-.autocomplete-hint kbd {
-    background: var(--beige);
-    border: 1px solid #d4c8b4;
-    border-radius: 4px;
-    padding: 0 5px;
-    font-size: 0.75rem;
-    font-family: inherit;
-    color: var(--brun);
-}/* ============================================================
-   AUTOCOMPLÉTION — Chips + Dropdown
-   À coller à la fin de assets/css/style.css
-   ============================================================ */
-
-/* Wrapper du composant */
-.autocomplete-group .autocomplete-wrapper {
-    background: var(--creme);
-    border: 1.5px solid var(--beige);
-    border-radius: var(--radius);
-    padding: 0.6rem 0.75rem;
-    transition: var(--transition);
-    position: relative;
-}
-
-.autocomplete-group .autocomplete-wrapper:focus-within {
-    border-color: var(--terre);
-    box-shadow: 0 0 0 3px rgba(196, 98, 45, 0.10);
-}
-
-/* Zone chips */
-.chips-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    margin-bottom: 0.5rem;
-}
-.chips-container:empty { margin-bottom: 0; }
-
-/* Chip individuel */
-.chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    background: var(--terre);
-    color: var(--blanc);
-    padding: 0.3rem 0.7rem 0.3rem 0.9rem;
-    border-radius: 50px;
-    font-size: 0.84rem;
-    font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
-    animation: chipIn 0.18s ease;
-}
-
-@keyframes chipIn {
-    from { transform: scale(0.7); opacity: 0; }
-    to   { transform: scale(1);   opacity: 1; }
-}
-
-/* Bouton × */
-.chip-remove {
-    background: rgba(255,255,255,0.25);
-    border: none;
-    color: var(--blanc);
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    cursor: pointer;
-    padding: 0;
-    line-height: 1;
-    transition: background var(--transition);
-    font-family: inherit;
-}
-.chip-remove:hover { background: rgba(255,255,255,0.45); }
-
-/* Input de recherche dans le wrapper */
-.autocomplete-input-wrap { position: relative; }
-
-.autocomplete-input-wrap input[type="text"] {
-    width: 100%;
-    border: none;
-    background: transparent;
-    outline: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.93rem;
-    color: var(--brun);
-    padding: 0.3rem 0;
-}
-.autocomplete-input-wrap input[type="text"]::placeholder {
-    color: var(--gris);
-    opacity: 0.8;
-}
-
-/* Dropdown */
-.autocomplete-dropdown {
-    display: none;
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0; right: 0;
-    background: var(--blanc);
-    border: 1.5px solid var(--beige);
-    border-radius: var(--radius);
-    box-shadow: 0 8px 24px rgba(44,26,14,0.12);
-    z-index: 200;
-    list-style: none;
-    padding: 0.4rem 0;
-    max-height: 220px;
-    overflow-y: auto;
-}
-
-.autocomplete-dropdown li {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-    color: var(--brun);
-    cursor: pointer;
-    transition: background var(--transition);
-    font-family: 'DM Sans', sans-serif;
-}
-.autocomplete-dropdown li:hover { background: var(--creme); color: var(--terre); }
-
-/* Option créer */
-.autocomplete-dropdown li.autocomplete-create {
-    color: var(--sauge);
-    font-weight: 500;
-    border-top: 1px solid var(--beige);
-    margin-top: 0.2rem;
-    padding-top: 0.7rem;
-}
-.autocomplete-dropdown li.autocomplete-create:hover {
-    background: #f0f5ec;
-    color: var(--sauge);
-}
-
-/* Hint */
-.autocomplete-hint {
-    font-size: 0.78rem;
-    color: var(--gris);
-    margin-top: 0.45rem;
-    font-family: 'DM Sans', sans-serif;
-}
-.autocomplete-hint kbd {
-    background: var(--beige);
-    border: 1px solid #d4c8b4;
-    border-radius: 4px;
-    padding: 0 5px;
-    font-size: 0.75rem;
-    font-family: inherit;
-    color: var(--brun);
-}
-
-/* ============================================================
-   BARRE DE RECHERCHE — page gerer_ingredients
-   ============================================================ */
-.ingredient-search-wrap {
-    margin-bottom: 0.8rem;
-}
-
-.ingredient-search-wrap input[type="text"] {
-    width: 100%;
-    max-width: 400px;
-    padding: 0.65rem 1.1rem;
-    border: 1.5px solid var(--beige);
-    border-radius: 50px;
-    background: var(--blanc);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    color: var(--brun);
-    outline: none;
-    transition: var(--transition);
-}
-
-.ingredient-search-wrap input[type="text"]:focus {
-    border-color: var(--terre);
-    box-shadow: 0 0 0 3px rgba(196,98,45,0.10);
-}
-
-/* ============================================================
-   MODALE NOUVEL INGRÉDIENT
-   ============================================================ */
-
-/* Overlay */
-#modal-overlay {
-    display: none; /* affiché par JS */
-    position: fixed;
-    inset: 0;
-    background: rgba(44, 26, 14, 0.55);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(3px);
-    animation: fadeOverlay 0.2s ease;
-}
-
-@keyframes fadeOverlay {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-
-/* Boîte modale */
-#modal-ingredient {
-    background: var(--blanc);
-    border-radius: 16px;
-    padding: 2rem;
-    width: 100%;
-    max-width: 420px;
-    box-shadow: 0 20px 60px rgba(44,26,14,0.25);
-    animation: slideModal 0.22s ease;
-}
-
-@keyframes slideModal {
-    from { transform: translateY(-20px) scale(0.97); opacity: 0; }
-    to   { transform: translateY(0)     scale(1);    opacity: 1; }
-}
-
-#modal-ingredient h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.35rem;
-    color: var(--brun);
-    margin-bottom: 0.3rem;
-}
-
-.modal-subtitle {
-    font-size: 0.85rem;
-    color: var(--gris);
-    margin-bottom: 1.2rem;
-}
-
-/* Boutons de la modale */
-.modal-actions {
-    display: flex;
-    gap: 0.75rem;
-    margin-top: 1.2rem;
-    align-items: center;
-}
-
-/* Le bouton Ajouter hérite du style global button[type=button] mais on le surcharge */
-#modal-confirmer {
-    background: var(--terre);
-    color: var(--blanc);
-    border: none;
-    padding: 0.7rem 1.6rem;
-    border-radius: 50px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.93rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: var(--transition);
-}
-#modal-confirmer:hover {
-    background: var(--terre-light);
-    transform: translateY(-1px);
-}
-
-.btn-modal-annuler {
-    background: transparent;
-    border: 1.5px solid var(--beige);
-    color: var(--gris);
-    padding: 0.7rem 1.3rem;
-    border-radius: 50px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem;
-    cursor: pointer;
-    transition: var(--transition);
-}
-.btn-modal-annuler:hover {
-    border-color: var(--gris);
-    color: var(--brun);
-}
-/* sidebar */
-.sidebar {
-    width: var(--sidebar-w);
-    background-color: var(--brun);
-    display: flex;
-    flex-direction: column;
-    padding: 2rem 1.5rem;
-    position: fixed;
-    top: 0;
-    left: 0; /* visible par defaut sur desktop */
-    height: 100vh;
-    z-index: 100;
-    transition: left 0.3s ease; /* animation de glissement */
-    box-shadow: 4px 0 20px rgba(44,26,14,0.15);
-}
-
-/* bouton burger */
-#burger {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--brun);
-    margin-right: 1rem;
-    padding: 0.3rem 0.6rem;
-    transition: var(--transition);
-}
-
-#burger:hover { color: var(--terre); }
-
-@media (max-width: 768px) {
-    .sidebar {
-        left: -260px; /* cachee par defaut sur mobile */
-    }
-    .main-wrapper { margin-left: 0; }
-    .site-footer  { margin-left: 0; }
 }
