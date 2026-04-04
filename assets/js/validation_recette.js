@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("modal-annuler").addEventListener("click", fermerModale);
 
-    // clic sur l'overlay (hors boîte) → fermer
+    // clic sur l'overlay (hors boîte) : fermer
     modalOverlay.addEventListener("click", function (e) {
         if (e.target === modalOverlay) fermerModale();
     });
@@ -176,9 +176,6 @@ document.addEventListener("DOMContentLoaded", function () {
         fermerModale();
     });
 
-    /* ============================================================
-       AUTOCOMPLÉTION GÉNÉRIQUE
-    ============================================================ */
     function initAutocomplete(inputId, chipsId, dropdownId, hiddenName, data, preselected, avecModale) {
 
         var input    = document.getElementById(inputId);
