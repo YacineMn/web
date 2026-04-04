@@ -46,7 +46,7 @@ $base = "/web/";
 
             <div class="header-admin">
                 <?php if($admin): ?>
-                    <a href="<?= $base ?>admin.php" class="btn-admin">Administration</a>
+                    <a href="<?= $base ?>admin.php" class="btn-admin">Admin</a>
                     <a href="<?= $base ?>logout.php" class="btn-logout">Déconnexion</a>
                 <?php else: ?>
                     <a href="<?= $base ?>login.php" class="btn-login">Connexion admin</a>
