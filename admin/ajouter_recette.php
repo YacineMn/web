@@ -8,7 +8,7 @@ require_once("../classes/Tag.php");
 
 requireAdmin();
 
-$pdo = getPDO();
+$pdo           = getPDO();
 $recetteObj    = new Recette($pdo);
 $ingredientObj = new Ingredient($pdo);
 $tagObj        = new Tag($pdo);
@@ -25,37 +25,36 @@ if (isset($_POST['titre'])) {
     if (empty($titre))       $erreurs[] = "Le titre est obligatoire.";
     if (empty($description)) $erreurs[] = "La description est obligatoire.";
 
-    // photo recette OBLIGATOIRE
-    if (!isset($_FILES['photo']) || $_FILES['photo']['error'] !== 0) {
+    // --- validation photo recette ---
+    // on verifie qu'un fichier a bien ete envoye
+    if (!aUploade($_FILES['photo'])) {
         $erreurs[] = "La photo de la recette est obligatoire.";
     } else {
-        $extensions_ok = ['jpg','jpeg','png','webp'];
-        $ext = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
-        if (!in_array($ext, $extensions_ok)) {
+        // on tente l'upload pour verifier l'extension
+        $photoTest = uploadImage($_FILES['photo'], "../uploads/recettes/");
+        if (!$photoTest) {
             $erreurs[] = "Format de photo non autorisé (jpg, jpeg, png, webp).";
         }
+        // on supprime le fichier deja deplace si erreurs ailleurs
+        // (il sera recree proprement si pas d'erreurs)
     }
 
-    // validation des nouveaux ingrédients : si nom rempli → photo obligatoire
+    // --- validation nouveaux ingredients : nom rempli → photo obligatoire ---
     if (isset($_POST['new_ingredient_noms'])) {
         foreach ($_POST['new_ingredient_noms'] as $idx => $nom_new) {
             $nom_new = trim($nom_new);
-            if (!empty($nom_new)) {
-                if (!isset($_FILES['new_ingredient_photos']['error'][$idx])
-                    || $_FILES['new_ingredient_photos']['error'][$idx] !== 0) {
-                    $erreurs[] = "La photo est obligatoire pour le nouvel ingrédient \"" . htmlspecialchars($nom_new) . "\".";
-                }
+            if (!empty($nom_new) && !aUploade($_FILES['new_ingredient_photos'] ? ['error' => $_FILES['new_ingredient_photos']['error'][$idx]] : null)) {
+                $erreurs[] = "La photo est obligatoire pour l'ingrédient \"" . htmlspecialchars($nom_new) . "\".";
             }
         }
     }
 
     if (empty($erreurs)) {
-        $photo = uniqid() . '.' . $ext;
-        move_uploaded_file($_FILES['photo']['tmp_name'], "../uploads/recettes/" . $photo);
-
+        // on upload la photo recette — uploadImage() gere tout
+        $photo      = uploadImage($_FILES['photo'], "../uploads/recettes/");
         $id_recette = $recetteObj->ajouter($titre, $description, $photo);
 
-        // ingrédients existants cochés
+        // --- ingredients existants coches ---
         if (isset($_POST['ingredients'])) {
             foreach ($_POST['ingredients'] as $id_ing) {
                 $st = $pdo->prepare("INSERT INTO recette_ingredients (recette_id, ingredient_id, quantite) VALUES (?,?,?)");
@@ -63,32 +62,30 @@ if (isset($_POST['titre'])) {
             }
         }
 
-        // nouveaux ingrédients saisis
+        // --- nouveaux ingredients saisis avec photo ---
         if (isset($_POST['new_ingredient_noms'])) {
             foreach ($_POST['new_ingredient_noms'] as $idx => $nom_new) {
                 $nom_new = trim($nom_new);
                 if (empty($nom_new)) continue;
 
-                $image_new = "default_ingredient.jpg";
-                if (isset($_FILES['new_ingredient_photos']['error'][$idx])
-                    && $_FILES['new_ingredient_photos']['error'][$idx] === 0) {
-                    $extensions_ok = ['jpg','jpeg','png','webp'];
-                    $ext_new = strtolower(pathinfo($_FILES['new_ingredient_photos']['name'][$idx], PATHINFO_EXTENSION));
-                    if (in_array($ext_new, $extensions_ok)) {
-                        $image_new = uniqid() . '.' . $ext_new;
-                        move_uploaded_file(
-                            $_FILES['new_ingredient_photos']['tmp_name'][$idx],
-                            "../uploads/ingredients/" . $image_new
-                        );
-                    }
-                }
+                // on reconstruit le tableau $_FILES pour cet index
+                $fichier = [
+                    'name'     => $_FILES['new_ingredient_photos']['name'][$idx],
+                    'tmp_name' => $_FILES['new_ingredient_photos']['tmp_name'][$idx],
+                    'error'    => $_FILES['new_ingredient_photos']['error'][$idx],
+                ];
+
+                // uploadImage() gere l'extension et le deplacement
+                $image_new = uploadImage($fichier, "../uploads/ingredients/");
+                if (!$image_new) $image_new = "default_ingredient.jpg";
+
                 $id_ing = $ingredientObj->ajouter($nom_new, $image_new);
                 $st = $pdo->prepare("INSERT INTO recette_ingredients (recette_id, ingredient_id, quantite) VALUES (?,?,?)");
                 $st->execute([$id_recette, $id_ing, ""]);
             }
         }
 
-        // tags existants cochés
+        // --- tags existants coches ---
         if (isset($_POST['tags'])) {
             foreach ($_POST['tags'] as $id_tag) {
                 $st = $pdo->prepare("INSERT INTO recette_tags (recette_id, tag_id) VALUES (?,?)");
@@ -96,7 +93,7 @@ if (isset($_POST['titre'])) {
             }
         }
 
-        // nouveaux tags saisis
+        // --- nouveaux tags saisis ---
         if (isset($_POST['new_tags'])) {
             foreach ($_POST['new_tags'] as $nom_tag) {
                 $nom_tag = trim($nom_tag);
@@ -129,20 +126,17 @@ if (isset($_POST['titre'])) {
     <form action="ajouter_recette.php" method="POST"
           enctype="multipart/form-data" id="form-ajouter">
 
-        <!-- TITRE -->
         <div class="form-group">
             <label for="titre">Titre *</label>
             <input type="text" name="titre" id="titre"
                 value="<?= isset($_POST['titre']) ? htmlspecialchars($_POST['titre']) : '' ?>">
         </div>
 
-        <!-- DESCRIPTION -->
         <div class="form-group">
             <label for="description">Description *</label>
             <textarea name="description" id="description"><?= isset($_POST['description']) ? htmlspecialchars($_POST['description']) : '' ?></textarea>
         </div>
 
-        <!-- PHOTO RECETTE obligatoire -->
         <div class="form-group">
             <label for="photo">
                 Photo de la recette *
@@ -154,28 +148,18 @@ if (isset($_POST['titre'])) {
                         border-radius:8px; border:2px solid var(--beige);">
         </div>
 
-        <!-- ================================================
-             INGRÉDIENTS EXISTANTS — filtrés par recherche
-        ================================================ -->
+        <!-- INGRÉDIENTS EXISTANTS -->
         <div class="form-group">
             <label>Ingrédients existants</label>
-
-            <!-- barre de filtrage — hors form, Entrée bloquée par JS -->
             <div class="filtre-wrap">
-                <input type="text"
-                       id="filtre-ingredients"
-                       placeholder="🔍  Filtrer les ingrédients…"
-                       autocomplete="off">
+                <input type="text" id="filtre-ingredients"
+                       placeholder="  Filtrer les ingrédients…" autocomplete="off">
             </div>
-
-            <!-- cases à cocher filtrées -->
             <div class="checkboxes" id="liste-ingredients">
                 <?php foreach ($ingredients as $i): ?>
                     <label class="checkbox-item"
                            data-nom="<?= strtolower(htmlspecialchars($i->nom)) ?>">
-                        <input type="checkbox"
-                               name="ingredients[]"
-                               value="<?= $i->id ?>"
+                        <input type="checkbox" name="ingredients[]" value="<?= $i->id ?>"
                                <?= (isset($_POST['ingredients']) && in_array($i->id, $_POST['ingredients'])) ? 'checked' : '' ?>>
                         <?= htmlspecialchars($i->nom) ?>
                     </label>
@@ -187,65 +171,43 @@ if (isset($_POST['titre'])) {
             </p>
         </div>
 
-        <!-- ================================================
-             NOUVEAUX INGRÉDIENTS — ajout dynamique
-        ================================================ -->
+        <!-- NOUVEAUX INGRÉDIENTS -->
         <div class="form-group">
-            <label>Nouvel ingrédient
-                <span class="label-hint">(si absent de la liste)</span>
-            </label>
-
+            <label>Nouvel ingrédient <span class="label-hint">(si absent de la liste)</span></label>
             <div id="nouveaux-ingredients">
-                <!-- ligne 0 présente par défaut -->
                 <div class="new-ingredient-row" id="new-ing-row-0">
                     <div class="new-ingredient-fields">
-                        <input type="text"
-                               name="new_ingredient_noms[]"
-                               placeholder="Nom de l'ingrédient"
-                               class="new-ing-nom"
-                               value="<?= (isset($_POST['new_ingredient_noms'][0])) ? htmlspecialchars($_POST['new_ingredient_noms'][0]) : '' ?>">
+                        <input type="text" name="new_ingredient_noms[]"
+                               placeholder="Nom de l'ingrédient" class="new-ing-nom"
+                               value="<?= isset($_POST['new_ingredient_noms'][0]) ? htmlspecialchars($_POST['new_ingredient_noms'][0]) : '' ?>">
                         <div class="new-ingredient-photo-wrap">
-                            <input type="file"
-                                   name="new_ingredient_photos[0]"
-                                   accept="image/*"
-                                   class="new-ing-photo">
+                            <input type="file" name="new_ingredient_photos[0]"
+                                   accept="image/*" class="new-ing-photo">
                             <img class="new-ing-preview" src=""
                                  style="display:none; max-width:60px; border-radius:6px;
                                         border:2px solid var(--beige); margin-top:0.3rem;">
                         </div>
                     </div>
-                    <!-- bouton supprimer cette ligne (caché sur la 1ère) -->
-                    <button type="button"
-                            class="btn-suppr-row"
-                            style="display:none;"
-                            title="Supprimer cette ligne">✕</button>
+                    <button type="button" class="btn-suppr-row" style="display:none;">✕</button>
                 </div>
             </div>
-
-            <!-- bouton ajouter une ligne -->
             <button type="button" id="btn-ajouter-ingredient" class="btn-ajouter-ligne">
                 + Ajouter un autre ingrédient
             </button>
         </div>
 
-        <!-- ================================================
-             TAGS EXISTANTS — filtrés par recherche
-        ================================================ -->
+        <!-- TAGS EXISTANTS -->
         <div class="form-group">
             <label>Tags existants</label>
             <div class="filtre-wrap">
-                <input type="text"
-                       id="filtre-tags"
-                       placeholder="🔍  Filtrer les tags…"
-                       autocomplete="off">
+                <input type="text" id="filtre-tags"
+                       placeholder="Filtrer les tags…" autocomplete="off">
             </div>
             <div class="checkboxes" id="liste-tags">
                 <?php foreach ($tags as $t): ?>
                     <label class="checkbox-item"
                            data-nom="<?= strtolower(htmlspecialchars($t->nom)) ?>">
-                        <input type="checkbox"
-                               name="tags[]"
-                               value="<?= $t->id ?>"
+                        <input type="checkbox" name="tags[]" value="<?= $t->id ?>"
                                <?= (isset($_POST['tags']) && in_array($t->id, $_POST['tags'])) ? 'checked' : '' ?>>
                         <?= htmlspecialchars($t->nom) ?>
                     </label>
@@ -257,19 +219,13 @@ if (isset($_POST['titre'])) {
             </p>
         </div>
 
-        <!-- ================================================
-             NOUVEAUX TAGS
-        ================================================ -->
+        <!-- NOUVEAUX TAGS -->
         <div class="form-group">
-            <label>Nouveau tag
-                <span class="label-hint">(si absent de la liste)</span>
-            </label>
+            <label>Nouveau tag <span class="label-hint">(si absent de la liste)</span></label>
             <div id="nouveaux-tags">
                 <div class="new-tag-row">
-                    <input type="text"
-                           name="new_tags[]"
-                           placeholder="Nom du tag"
-                           value="<?= (isset($_POST['new_tags'][0])) ? htmlspecialchars($_POST['new_tags'][0]) : '' ?>">
+                    <input type="text" name="new_tags[]" placeholder="Nom du tag"
+                           value="<?= isset($_POST['new_tags'][0]) ? htmlspecialchars($_POST['new_tags'][0]) : '' ?>">
                     <button type="button" class="btn-suppr-row" style="display:none;">✕</button>
                 </div>
             </div>
@@ -286,5 +242,4 @@ if (isset($_POST['titre'])) {
 </section>
 
 <script src="../assets/js/validation_recette.js"></script>
-
 <?php require("../includes/footer.php"); ?>
