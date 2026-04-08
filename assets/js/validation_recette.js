@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-
     /* ============================================================
        APERÇU PHOTO sur les lignes nouvel ingrédient
        On délègue l'événement au conteneur parent
