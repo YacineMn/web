@@ -13,7 +13,7 @@
         <div class="footer-nav">
             <strong>Navigation</strong>
             <a href="/web/index.php">Accueil</a>
-            <a href="/web/recettes.php">Toutes les recettes</a>
+            <a href="/web/recettes.php">Toutes les recettes </a>
         </div>
 
         <div class="footer-sources">
