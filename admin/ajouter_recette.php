@@ -67,7 +67,6 @@ if (isset($_POST['titre'])) {
             foreach ($_POST['new_ingredient_noms'] as $idx => $nom_new) {
                 $nom_new = trim($nom_new);
                 if (empty($nom_new)) continue;
-
                 // on reconstruit le tableau $_FILES pour cet index
                 $fichier = [
                     'name'     => $_FILES['new_ingredient_photos']['name'][$idx],
