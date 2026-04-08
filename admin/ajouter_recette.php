@@ -26,31 +26,34 @@ if (isset($_POST['titre'])) {
     if (empty($description)) $erreurs[] = "La description est obligatoire.";
 
     // --- validation photo recette ---
-    // on verifie qu'un fichier a bien ete envoye
+    // on verifie d'abord que le fichier a ete envoye
     if (!aUploade($_FILES['photo'])) {
         $erreurs[] = "La photo de la recette est obligatoire.";
     } else {
-        // on tente l'upload pour verifier l'extension
-        $photoTest = uploadImage($_FILES['photo'], "../uploads/recettes/");
-        if (!$photoTest) {
+        // on verifie juste l'extension SANS deplacer le fichier
+        $extensions_ok = ['jpg', 'jpeg', 'png', 'webp'];
+        $ext = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
+        if (!in_array($ext, $extensions_ok)) {
             $erreurs[] = "Format de photo non autorisé (jpg, jpeg, png, webp).";
         }
-        // on supprime le fichier deja deplace si erreurs ailleurs
-        // (il sera recree proprement si pas d'erreurs)
     }
 
     // --- validation nouveaux ingredients : nom rempli → photo obligatoire ---
     if (isset($_POST['new_ingredient_noms'])) {
         foreach ($_POST['new_ingredient_noms'] as $idx => $nom_new) {
             $nom_new = trim($nom_new);
-            if (!empty($nom_new) && !aUploade($_FILES['new_ingredient_photos'] ? ['error' => $_FILES['new_ingredient_photos']['error'][$idx]] : null)) {
-                $erreurs[] = "La photo est obligatoire pour l'ingrédient \"" . htmlspecialchars($nom_new) . "\".";
+            if (!empty($nom_new)) {
+                $fichierTest = ['error' => $_FILES['new_ingredient_photos']['error'][$idx]];
+                if (!aUploade($fichierTest)) {
+                    $erreurs[] = "La photo est obligatoire pour l'ingrédient \"" . htmlspecialchars($nom_new) . "\".";
+                }
             }
         }
     }
 
     if (empty($erreurs)) {
-        // on upload la photo recette — uploadImage() gere tout
+        // --- on upload la photo recette une seule fois ---
+        // uploadImage() deplace le fichier temporaire vers uploads/recettes/
         $photo      = uploadImage($_FILES['photo'], "../uploads/recettes/");
         $id_recette = $recetteObj->ajouter($titre, $description, $photo);
 
@@ -61,15 +64,13 @@ if (isset($_POST['titre'])) {
                 $st->execute([$id_recette, $id_ing, ""]);
             }
         }
-        // quantite : champ prévu lors de la conception de la BD mais non utilisé à l'affichage
-        // (fonctionnalité jugée en trop en cours de développement).
-        // On passe "" pour satisfaire le INSERT — peut être exploité dans une future mise à jour
 
         // --- nouveaux ingredients saisis avec photo ---
         if (isset($_POST['new_ingredient_noms'])) {
             foreach ($_POST['new_ingredient_noms'] as $idx => $nom_new) {
                 $nom_new = trim($nom_new);
                 if (empty($nom_new)) continue;
+
                 // on reconstruit le tableau $_FILES pour cet index
                 $fichier = [
                     'name'     => $_FILES['new_ingredient_photos']['name'][$idx],
@@ -77,7 +78,6 @@ if (isset($_POST['titre'])) {
                     'error'    => $_FILES['new_ingredient_photos']['error'][$idx],
                 ];
 
-                // uploadImage() gere l'extension et le deplacement
                 $image_new = uploadImage($fichier, "../uploads/ingredients/");
                 if (!$image_new) $image_new = "default_ingredient.jpg";
 
@@ -155,7 +155,7 @@ if (isset($_POST['titre'])) {
             <label>Ingrédients existants</label>
             <div class="filtre-wrap">
                 <input type="text" id="filtre-ingredients"
-                       placeholder="  Filtrer les ingrédients…" autocomplete="off">
+                       placeholder=" Filtrer les ingrédients…" autocomplete="off">
             </div>
             <div class="checkboxes" id="liste-ingredients">
                 <?php foreach ($ingredients as $i): ?>
@@ -203,7 +203,7 @@ if (isset($_POST['titre'])) {
             <label>Tags existants</label>
             <div class="filtre-wrap">
                 <input type="text" id="filtre-tags"
-                       placeholder="Filtrer les tags…" autocomplete="off">
+                       placeholder="🔍  Filtrer les tags…" autocomplete="off">
             </div>
             <div class="checkboxes" id="liste-tags">
                 <?php foreach ($tags as $t): ?>
