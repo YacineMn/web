@@ -61,6 +61,9 @@ if (isset($_POST['titre'])) {
                 $st->execute([$id_recette, $id_ing, ""]);
             }
         }
+        // quantite : champ prévu lors de la conception de la BD mais non utilisé à l'affichage
+        // (fonctionnalité jugée en trop en cours de développement).
+        // On passe "" pour satisfaire le INSERT — peut être exploité dans une future mise à jour
 
         // --- nouveaux ingredients saisis avec photo ---
         if (isset($_POST['new_ingredient_noms'])) {

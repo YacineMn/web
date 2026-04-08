@@ -1,12 +1,6 @@
-/* ============================================================
-   TasteLab — CSS Principal — niveau L2
-   ============================================================ */
-
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');
 
-/* ============================================================
-   VARIABLES
-   ============================================================ */
+
 :root {
     --creme:  #FAF6F0;
     --brun:   #2C1A0E;
@@ -19,9 +13,6 @@
     --shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
-/* ============================================================
-   RESET
-   ============================================================ */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -36,9 +27,6 @@ body {
 a   { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
 
-/* ============================================================
-   HEADER — bannière principale
-   ============================================================ */
 .site-header {
     background: var(--blanc);
     padding: 1rem 2rem;
@@ -151,9 +139,6 @@ img { max-width: 100%; display: block; }
 .btn-logout { border: 1.5px solid var(--terre); color: var(--terre); }
 .btn-logout:hover { background: var(--terre); color: var(--blanc); }
 
-/* ============================================================
-   CONTENU PRINCIPAL
-   ============================================================ */
 .site-main {
     flex: 1;
     padding: 2rem 2rem;
@@ -162,9 +147,6 @@ img { max-width: 100%; display: block; }
     margin: 0 auto;
 }
 
-/* ============================================================
-   TITRES
-   ============================================================ */
 h2 {
     font-family: 'Playfair Display', serif;
     font-size: 1.4rem;
@@ -177,10 +159,6 @@ h2 {
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
 }
-
-/* ============================================================
-   HERO — page d'accueil
-   ============================================================ */
 .hero {
     background: var(--brun);
     border-radius: 16px;
@@ -224,9 +202,7 @@ h2 {
 
 .btn-voir-tout:hover { background: var(--brun); color: var(--creme); }
 
-/* ============================================================
-   GRILLE DE RECETTES
-   ============================================================ */
+
 .recipes-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -297,9 +273,6 @@ h2 {
     border-color: var(--terre);
 }
 
-/* ============================================================
-   PAGE DÉTAIL RECETTE
-   ============================================================ */
 .recette-detail {
     background: var(--blanc);
     border-radius: 16px;
@@ -362,9 +335,7 @@ h2 {
     margin-bottom: 0.4rem;
 }
 
-/* ============================================================
-   PAGE LOGIN
-   ============================================================ */
+
 .login-page {
     max-width: 400px;
     margin: 3rem auto;
@@ -381,9 +352,6 @@ h2 {
     margin-bottom: 1.5rem;
 }
 
-/* ============================================================
-   FORMULAIRES
-   ============================================================ */
 .form-group { margin-bottom: 1.2rem; }
 
 .form-group label {
@@ -442,9 +410,6 @@ button[type="submit"] {
 
 button[type="submit"]:hover { background: #D9733E; }
 
-/* ============================================================
-   MESSAGES D'ERREUR
-   ============================================================ */
 .erreur, #erreur-js, #erreur-form-js {
     background: #FEF0EC;
     border: 1.5px solid var(--terre);
@@ -458,9 +423,6 @@ button[type="submit"]:hover { background: #D9733E; }
 .erreurs          { margin-bottom: 1rem; }
 .erreurs .erreur  { margin-bottom: 0.4rem; }
 
-/* ============================================================
-   FILTRAGE CHECKBOXES — ingrédients & tags
-   ============================================================ */
 .filtre-wrap { margin-bottom: 0.6rem; }
 
 .filtre-wrap input[type="text"] {
@@ -519,9 +481,6 @@ button[type="submit"]:hover { background: #D9733E; }
     font-weight: 500;
 }
 
-/* ============================================================
-   NOUVEAUX INGRÉDIENTS — lignes dynamiques
-   ============================================================ */
 .new-ingredient-row {
     display: flex;
     align-items: flex-start;
@@ -561,9 +520,6 @@ button[type="submit"]:hover { background: #D9733E; }
 .new-ingredient-photo-wrap { display: flex; flex-direction: column; }
 .new-ing-photo { font-size: 0.85rem; padding: 0.3rem 0; }
 
-/* ============================================================
-   NOUVEAUX TAGS — lignes dynamiques
-   ============================================================ */
 .new-tag-row {
     display: flex;
     align-items: center;
@@ -623,9 +579,6 @@ button[type="submit"]:hover { background: #D9733E; }
 
 .btn-ajouter-ligne:hover { border-color: var(--terre); color: var(--terre); }
 
-/* ============================================================
-   PAGE ADMIN — tableau de bord
-   ============================================================ */
 .admin-page h1 {
     font-family: 'Playfair Display', serif;
     font-size: 1.8rem;
@@ -781,9 +734,6 @@ button[type="submit"]:hover { background: #D9733E; }
     border-bottom: 2px solid var(--beige);
 }
 
-/* ============================================================
-   FOOTER
-   ============================================================ */
 .site-footer {
     background: var(--brun);
     color: #A3B08F;
@@ -832,9 +782,7 @@ button[type="submit"]:hover { background: #D9733E; }
 .footer-sources a          { color: #A3B08F; text-decoration: underline; text-underline-offset: 2px; }
 .footer-sources a:hover    { color: var(--creme); }
 
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
+
 @media (max-width: 768px) {
     .site-header    { padding: 0.8rem 1rem; gap: 0.7rem; }
     .header-nav     { display: none; }

@@ -49,9 +49,6 @@ function imgIngredient($nom){
                          alt="<?= htmlspecialchars($ingredient->nom) ?>"
                          style="width:30px; height:30px; object-fit:cover; border-radius:50%; vertical-align:middle; margin-right:0.4rem;">
                     <?= htmlspecialchars($ingredient->nom) ?>
-                    <?php if(!empty($ingredient->quantite)): ?>
-                        — <?= htmlspecialchars($ingredient->quantite) ?>
-                    <?php endif; ?>
                 </li>
             <?php endforeach; ?>
         </ul>

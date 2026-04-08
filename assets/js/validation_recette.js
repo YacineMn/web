@@ -1,8 +1,3 @@
-// validation_recette.js — TasteLab — niveau L2
-// Filtrage des checkboxes ingrédients/tags
-// Ajout dynamique de lignes nouvel ingrédient / nouveau tag
-// Validation JS avant soumission
-
 document.addEventListener("DOMContentLoaded", function () {
 
     /* ============================================================
@@ -221,7 +216,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         }
-
         if (erreur) {
             e.preventDefault();
             var div = document.getElementById("erreur-js");
@@ -235,5 +229,4 @@ document.addEventListener("DOMContentLoaded", function () {
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
     });
-
 });
