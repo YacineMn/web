@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 08 avr. 2026 à 22:29
+-- Généré le : jeu. 09 avr. 2026 à 23:19
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -65,7 +65,21 @@ INSERT INTO `ingredients` (`id`, `nom`, `image`) VALUES
 (40, 'parmesan', '69d6b67b56922.jpg'),
 (41, 'Sauce tomate', '69d6b67b57a67.jpg'),
 (42, 'mozarella', '69d6b7b9c5227.jpg'),
-(43, 'basilic', '69d6b7b9c6386.jpg');
+(43, 'basilic', '69d6b7b9c6386.jpg'),
+(44, 'cacao', '69d7de5c0683f.jpg'),
+(45, 'mascarpone', '69d7de5c09b59.jpg'),
+(46, 'viande de boeuf', '69d7e0f21ca87.jpg'),
+(47, 'champignon', '69d7e0f21eb56.jpg'),
+(48, 'huile tournesol', '69d7e0f221661.jpg'),
+(49, 'Vin rouge', '69d7e0f22376a.jpg'),
+(50, 'Carotte', '69d7e0f2259da.jpg'),
+(51, 'Lardons', '69d7e0f2279aa.jpg'),
+(52, 'viande hachée', '69d7e35e7614f.jpg'),
+(53, 'Feuilles chou', '69d7e35e78b0d.jpg'),
+(54, 'Sauce soja', '69d7e35e7acf3.jpg'),
+(55, 'Pâte à gyoza', '69d7e35e7ce15.jpg'),
+(56, 'Fromage râpé', '69d7e4fc0df60.jpg'),
+(57, 'Baguette de pain', '69d7e4fc0fcf0.jpg');
 
 -- --------------------------------------------------------
 
@@ -93,7 +107,11 @@ INSERT INTO `recettes` (`id`, `titre`, `description`, `photo`, `created_at`) VAL
 (11, 'chlita', 'Un plat traditionnel kabyle à base de poivrons grillés, finement écrasés et mélangés avec de l’ail, de l’huile d’olive et des épices. Savoureux et légèrement relevé, il est souvent dégusté avec du pain, en accompagnement ou en plat simple et convivial.', '69d0fafab349c.jpg', '2026-04-04 11:50:18'),
 (13, 'Aligot', 'L’aligot est une spécialité traditionnelle du sud de la France (Aubrac). Il s’agit d’une purée de pomme de terre mélangée à de la tome fraîche, avec de l’ail, de la crème et du beurre.\r\nLe résultat est une préparation très filante, riche et onctueuse.', '69d6b32e8b1ee.jpg', '2026-04-08 19:56:07'),
 (14, 'Epinards coquilles ricotta', 'Un plat de pâtes gourmand et crémeux, combinant des épinards fondants avec de la ricotta, le tout garni dans des coquilles de pâtes (conchiglioni) et gratiné au four.', '69d6b85c98e3a.jpg', '2026-04-08 20:11:39'),
-(15, 'Pizza', 'La pizza est un plat italien composé d’une base de pâte à pizza garnie de sauce tomate, de mozzarella et d’autres ingrédients au choix, puis cuite au four pour obtenir une texture croustillante et fondante.', '69d6b842a7b3c.jpg', '2026-04-08 20:16:57');
+(15, 'Pizza', 'La pizza est un plat italien composé d’une base de pâte à pizza garnie de sauce tomate, de mozzarella et d’autres ingrédients au choix, puis cuite au four pour obtenir une texture croustillante et fondante.', '69d6b842a7b3c.jpg', '2026-04-08 20:16:57'),
+(16, 'Tiramisu', 'Le tiramisu est un dessert italien crémeux à base de mascarpone, de café et de biscuits à la cuillère, le tout saupoudré de cacao. Il se prépare sans cuisson et doit reposer au frais pour développer ses saveurs.', '69d7de5bf3e91.jpg', '2026-04-09 17:14:04'),
+(17, 'Bœuf bourguignon', 'Le bœuf bourguignon est un grand classique de la cuisine française. C’est un plat mijoté à base de bœuf, cuit lentement dans du vin rouge avec des légumes, pour une viande tendre et une sauce riche.', '69d7e0f21652a.jpg', '2026-04-09 17:25:06'),
+(18, 'Gyozas', 'Les gyozas sont des raviolis japonais croustillants et fondants, garnis de viande ou de légumes, puis cuits à la poêle avec un peu d’eau pour une texture à la fois dorée et moelleuse.', '69d7e35e70fbe.jpg', '2026-04-09 17:35:26'),
+(19, 'Soupe à l’oignon', 'La soupe à l’oignon est une spécialité française traditionnelle, à base d’oignon longuement caramélisés, de bouillon et gratinée avec du fromage sur du pain. C’est un plat chaud, simple et très réconfortant.', '69d7e4fc08e1b.jpg', '2026-04-09 17:42:20');
 
 -- --------------------------------------------------------
 
@@ -124,6 +142,7 @@ INSERT INTO `recette_ingredients` (`recette_id`, `ingredient_id`, `quantite`) VA
 (10, 26, ''),
 (10, 27, ''),
 (10, 28, ''),
+(11, 7, ''),
 (11, 23, ''),
 (11, 30, ''),
 (11, 31, ''),
@@ -145,7 +164,37 @@ INSERT INTO `recette_ingredients` (`recette_id`, `ingredient_id`, `quantite`) VA
 (15, 31, ''),
 (15, 41, ''),
 (15, 42, ''),
-(15, 43, '');
+(15, 43, ''),
+(16, 2, ''),
+(16, 5, ''),
+(16, 44, ''),
+(16, 45, ''),
+(17, 7, ''),
+(17, 24, ''),
+(17, 28, ''),
+(17, 35, ''),
+(17, 36, ''),
+(17, 46, ''),
+(17, 47, ''),
+(17, 48, ''),
+(17, 49, ''),
+(17, 50, ''),
+(17, 51, ''),
+(18, 7, ''),
+(18, 35, ''),
+(18, 36, ''),
+(18, 48, ''),
+(18, 52, ''),
+(18, 53, ''),
+(18, 54, ''),
+(18, 55, ''),
+(19, 3, ''),
+(19, 7, ''),
+(19, 24, ''),
+(19, 28, ''),
+(19, 36, ''),
+(19, 56, ''),
+(19, 57, '');
 
 -- --------------------------------------------------------
 
@@ -167,7 +216,12 @@ INSERT INTO `recette_tags` (`recette_id`, `tag_id`) VALUES
 (2, 4),
 (4, 21),
 (4, 22),
+(11, 2),
 (11, 3),
+(11, 18),
+(11, 31),
+(11, 32),
+(11, 38),
 (13, 26),
 (13, 27),
 (14, 2),
@@ -176,7 +230,28 @@ INSERT INTO `recette_tags` (`recette_id`, `tag_id`) VALUES
 (14, 29),
 (15, 29),
 (15, 30),
-(15, 31);
+(15, 31),
+(16, 1),
+(16, 3),
+(16, 16),
+(16, 22),
+(16, 26),
+(16, 30),
+(16, 32),
+(17, 27),
+(17, 33),
+(17, 34),
+(17, 35),
+(17, 36),
+(18, 3),
+(18, 18),
+(18, 37),
+(18, 38),
+(19, 18),
+(19, 27),
+(19, 29),
+(19, 33),
+(19, 35);
 
 -- --------------------------------------------------------
 
@@ -199,14 +274,21 @@ INSERT INTO `tags` (`id`, `nom`) VALUES
 (20, 'bon'),
 (27, 'chaud'),
 (28, 'cremeux'),
+(37, 'croustillant'),
 (1, 'dessert'),
 (31, 'facile'),
+(33, 'familial'),
 (30, 'gourmand'),
+(32, 'leger'),
 (26, 'onctueux'),
 (3, 'rapide'),
 (29, 'reconfortant'),
+(34, 'riche'),
+(38, 'Salé'),
+(35, 'savoureux'),
 (18, 'simple'),
 (22, 'sucrée'),
+(36, 'tendre'),
 (21, 'traditionnel'),
 (19, 'varié'),
 (2, 'végétarien');
@@ -257,19 +339,19 @@ ALTER TABLE `tags`
 -- AUTO_INCREMENT pour la table `ingredients`
 --
 ALTER TABLE `ingredients`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT pour la table `recettes`
 --
 ALTER TABLE `recettes`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT pour la table `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- Contraintes pour les tables déchargées
