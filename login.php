@@ -4,8 +4,21 @@ ini_set('display_errors', 1);
 ob_start();
 session_start(); // on demarre la session ici
 require_once("includes/functions.php"); // on inclut les fonctions utilitaires
+/*
+Page de connexion administrateur :
 
-// identifiants admin ecrits en dur comme demande par le prof
+- Démarre la session PHP pour gérer l'état de connexion
+- Définit des identifiants admin en dur (login + mot de passe)
+- Vérifie les données envoyées via le formulaire (POST)
+
+Logique :
+- Si les champs sont vides → message d'erreur
+- Si les identifiants sont corrects → création d'une session admin et redirection vers admin.php
+- Sinon → affichage d'une erreur
+
+La page permet donc de sécuriser l'accès à l'espace admin.
+*/
+// identifiants admin 
 $ADMIN_LOGIN = "admin";
 $ADMIN_PWD   = "1234";
 

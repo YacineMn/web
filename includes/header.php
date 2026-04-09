@@ -19,19 +19,27 @@ $base  = "/web/";
 
     <div class="main-wrapper" id="main-wrapper">
 
-        <!-- =====================================================
-             BANNIÈRE — titre du site + navigation principale
-             Toujours visible, conforme au cahier des charges
-        ===================================================== -->
+        
         <header class="site-header">
 
 
-            <!-- titre / logo -->
+            <!-- titre -->
             <div class="site-brand">
                 <a href="<?= $base ?>index.php" class="site-title">TasteLab</a>
             </div>
 
             <!-- navigation principale — toujours visible -->
+             <!--
+                Ce code permet de savoir quelle page est actuellement ouverte.
+                basename($_SERVER['PHP_SELF']) récupère le nom du fichier (ex: index.php).
+
+                Si on est sur index.php :
+                 on ajoute la classe "active" au lien
+
+                But :
+                 appliquer un style CSS spécial (ex : couleur différente)
+                 montrer à l'utilisateur sur quelle page il se trouve dans le menu
+            -->
             <nav class="header-nav">
                 <a href="<?= $base ?>index.php"
                    class="nav-link <?= (basename($_SERVER['PHP_SELF']) === 'index.php') ? 'active' : '' ?>">
@@ -51,8 +59,17 @@ $base  = "/web/";
                        autocomplete="off">
                 <button type="submit">Rechercher</button>
             </form>
+            <!--
+            Affichage conditionnel selon l'état de connexion admin :
 
-            <!-- zone admin -->
+                - Si l'utilisateur est admin (session active) :
+                 on affiche les boutons Admin et Déconnexion
+
+                - Sinon :
+                 on affiche le bouton Connexion admin
+                But :
+                 adapter le menu selon que l'utilisateur est connecté ou non
+            -->
             <div class="header-admin">
                 <?php if ($admin): ?>
                     <a href="<?= $base ?>admin.php"  class="btn-admin">Admin</a>

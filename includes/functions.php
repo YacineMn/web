@@ -4,9 +4,9 @@
 function isAdmin() {
     return isset($_SESSION['admin']) && $_SESSION['admin'] === true;
 }
-
-// redirige vers login si pas admin
-// on utilise un chemin absolu pour que ca marche depuis n'importe quel sous-dossier
+//Vérifie si l'utilisateur est admin.
+//Si ce n'est pas le cas, on le redirige vers la page de connexion
+//et on bloque l'accès à la page 
 function requireAdmin() {
     if (!isAdmin()) {
         header("Location: /web/login.php");

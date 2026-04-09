@@ -10,6 +10,7 @@
             <p>Votre carnet de recettes maison.</p>
         </div>
 
+        
         <div class="footer-nav">
             <strong>Navigation</strong>
             <a href="/web/index.php">Accueil</a>

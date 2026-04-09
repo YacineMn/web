@@ -1,4 +1,5 @@
 <?php 
+// Connexion à la base de données via PDO (sécurisé et réutilisable)
 function getPDO(){
     //fonction pour se connecter a la base de données
     $db_name = "recettes_db";//nom de la base données (suposés comme ca a modfier apres discussion)

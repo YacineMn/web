@@ -1,4 +1,13 @@
 <?php
+/*
+Page d'accueil du site
+
+- Initialise la session et la connexion à la base de données
+- Récupère toutes les recettes depuis la base
+- Affiche que 4 recettes (array_slice)
+- Inclut le header et le footer communs
+- Propose un accès vers la liste complète des recettes
+*/
 require("includes/session.php"); //connexion a la session 
 require("includes/db.php");
 require("classes/Recette.php");

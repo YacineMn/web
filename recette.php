@@ -3,7 +3,21 @@ require("includes/session.php");
 require("includes/db.php");
 require("includes/functions.php");
 require("classes/Recette.php");
+/*
+Page de détail d'une recette :
 
+- Récupère l'ID de la recette via GET
+- Vérifie si l'ID existe sinon stoppe l'exécution
+- Récupère la recette complète depuis la base de données
+
+Ensuite :
+- Affiche les informations de la recette (titre, description, image)
+- Affiche la liste des ingrédients associés avec leurs images
+- Affiche les tags associés si ils existent
+
+Des fonctions "helper" permettent d'afficher une image par défaut
+si le fichier n'existe pas (recette ou ingrédient).
+*/
 $pdo        = getPDO();
 $recetteObj = new Recette($pdo);
 

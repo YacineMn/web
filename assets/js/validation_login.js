@@ -1,5 +1,14 @@
-// validation cote client du formulaire de login
-// le prof demande une double validation : JS + PHP
+/*
+Validation du formulaire de login (côté client) :
+
+- Vérifie que les champs "login" et "mot de passe" ne sont pas vides
+- Intercepte l’envoi du formulaire avant le submit
+- Si une erreur est détectée :
+    - bloque l’envoi au serveur (preventDefault)
+    - affiche un message d’erreur dans la page
+
+Cette validation améliore l’expérience utilisateur, mais ne remplace pas la validation PHP côté serveur
+*/
 
 document.addEventListener("DOMContentLoaded", function(){
 

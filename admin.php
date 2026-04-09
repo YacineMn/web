@@ -3,7 +3,13 @@ require_once("includes/session.php");
 require_once("includes/functions.php");
 require_once("includes/db.php");
 require_once("classes/Recette.php");
-
+/*
+Cette page représente le tableau de bord administrateur du site.
+Elle permet à l’admin de visualiser toutes les recettes, d’ajouter de nouvelles recettes,
+et d’accéder aux pages de gestion des tags et des ingrédients.
+On y retrouve aussi une recherche côté client pour filtrer rapidement les recettes
+dans le tableau sans recharger la page.
+*/
 requireAdmin();
 
 $pdo        = getPDO();

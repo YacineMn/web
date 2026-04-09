@@ -1,4 +1,6 @@
 <?php 
+// Création des objets métiers pour manipuler les données
+// (recettes, ingrédients, tags)
 class Tag {
     private $pdo;//stocke la connexion a la bd
     public function __construct($pdo){ //on sauvegarde la connexion a la bd

@@ -7,7 +7,24 @@ require_once("../classes/Ingredient.php");
 require_once("../classes/Tag.php");
 
 requireAdmin();
+/*
+ Cette page permet d’ajouter une nouvelle recette dans le site (réservée à l’administrateur).
 
+ Elle gère plusieurs étapes :
+ - la validation des données du formulaire (titre, description, photo)
+ - la vérification et l’upload sécurisé des images (recette + ingrédients)
+ - l’ajout de la recette dans la base de données
+ - la gestion des relations :
+      * ingrédients existants ou nouveaux
+      * tags existants ou nouveaux
+
+ Le formulaire est dynamique : l’utilisateur peut ajouter plusieurs ingrédients et tags,
+ avec une gestion des images pour chaque nouvel ingrédient.
+
+ La page utilise aussi une double validation :
+ - côté PHP (sécurité serveur + base de données)
+ - côté JavaScript (validation rapide et expérience utilisateur)
+ */
 $pdo           = getPDO();
 $recetteObj    = new Recette($pdo);
 $ingredientObj = new Ingredient($pdo);
@@ -38,7 +55,7 @@ if (isset($_POST['titre'])) {
         }
     }
 
-    // --- validation nouveaux ingredients : nom rempli → photo obligatoire ---
+    // --- validation nouveaux ingredients : nom rempli photo obligatoire ---
     if (isset($_POST['new_ingredient_noms'])) {
         foreach ($_POST['new_ingredient_noms'] as $idx => $nom_new) {
             $nom_new = trim($nom_new);

@@ -1,3 +1,14 @@
+/*
+Ce script permet la recherche dynamique des recettes dans le tableau admin.
+
+- Il écoute la saisie dans la barre de recherche
+- Il filtre les lignes du tableau en temps réel (sans recharger la page)
+- La recherche se fait sur le titre ET la description
+- Il met à jour le compteur de résultats affichés
+- Il affiche un message si aucune recette ne correspond
+
+Ce système améliore l’expérience utilisateur côté admin en rendant la recherche instantanée.
+*/
 document.addEventListener("DOMContentLoaded", function(){
 
     var searchInput = document.getElementById("recherche-recettes");
