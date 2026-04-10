@@ -5,13 +5,15 @@ require_once("../includes/db.php");
 require_once("../classes/Ingredient.php");
 
 requireAdmin();
-
+//-----
+//Initialisations
+//---------
 $pdo           = getPDO();
 $ingredientObj = new Ingredient($pdo);
-
+//recuperer id ingredient si vide acceuil
 if (empty($_GET['id'])) { header("Location: gerer_ingredients.php"); exit(); }
 $id = $_GET['id'];
-
+//Recuperer de bd ingredient + transformer en obj  
 $sql = "SELECT * FROM ingredients WHERE id=?";
 $st  = $pdo->prepare($sql);
 $st->execute([$id]);
@@ -20,7 +22,9 @@ $ingredient = $st->fetch(PDO::FETCH_OBJ);
 if (!$ingredient) { header("Location: gerer_ingredients.php"); exit(); }
 
 $erreurs = [];
-
+//-----------
+//Validations PHP
+//-----------
 if (isset($_POST['nom_ingredient'])) {
     $nom = trim($_POST['nom_ingredient']);
     if (empty($nom)) $erreurs[] = "Le nom est obligatoire.";

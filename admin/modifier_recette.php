@@ -7,7 +7,9 @@ require_once("../classes/Ingredient.php");
 require_once("../classes/Tag.php");
 
 requireAdmin();
-
+//-------------
+//Intialisations et recup bd
+//-----------
 $pdo           = getPDO();
 $recetteObj    = new Recette($pdo);
 $ingredientObj = new Ingredient($pdo);
@@ -22,17 +24,19 @@ $tags        = $tagObj->getAll();
 
 if (!$recette) { header("Location: ../admin.php"); exit(); }
 
-// ids deja lies a cette recette
+// Recuperer les ingredients existant de bd
 $st_ing = $pdo->prepare("SELECT ingredient_id FROM recette_ingredients WHERE recette_id=?");
 $st_ing->execute([$id]);
-$sel_ingredient_ids = $st_ing->fetchAll(PDO::FETCH_COLUMN);
+$sel_ingredient_ids = $st_ing->fetchAll(PDO::FETCH_COLUMN);//permet de récupérer toutes les lignes d’une requête SQL sous forme d’un tableau PHP contenant uniquement les valeurs d’une colonne."
 
 $st_tag = $pdo->prepare("SELECT tag_id FROM recette_tags WHERE recette_id=?");
 $st_tag->execute([$id]);
 $sel_tag_ids = $st_tag->fetchAll(PDO::FETCH_COLUMN);
 
 $erreurs = [];
-
+//--------
+//Validations PHP
+//---------------
 if (isset($_POST['titre'])) {
     $titre       = trim($_POST['titre']);
     $description = trim($_POST['description']);
@@ -64,11 +68,13 @@ if (isset($_POST['titre'])) {
             }
         }
     }
-
+///---------------------
+//Mettre a jour a bd
+//-------------------
     if (empty($erreurs)) {
         $recetteObj->modifier($id, $titre, $description, $photo);
 
-        // on repart de zero sur les liens ingredients et tags
+        // on supprime ce qu'il ya a supprimmer
         $pdo->prepare("DELETE FROM recette_ingredients WHERE recette_id=?")->execute([$id]);
         $pdo->prepare("DELETE FROM recette_tags WHERE recette_id=?")->execute([$id]);
 
@@ -131,6 +137,8 @@ if (isset($_POST['titre'])) {
 }
 
 // fallback image si fichier absent sur cette machine
+//si image existe → afficher
+//sinon → image par défaut
 function imgRecette($nom) {
     $path = "../uploads/recettes/" . $nom;
     return ($nom && file_exists($path)) ? $path : "../uploads/recettes/default_recette.jpg";

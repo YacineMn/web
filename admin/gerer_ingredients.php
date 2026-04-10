@@ -10,7 +10,9 @@ $pdo           = getPDO();
 $ingredientObj = new Ingredient($pdo);
 
 $erreurs = [];
-
+//---------------------------
+//Validation php
+//---------------------------------
 // --- suppression ---
 if (isset($_GET['supprimer'])) {
     $sql = "DELETE FROM ingredients WHERE id=?";
@@ -23,7 +25,7 @@ if (isset($_GET['supprimer'])) {
 // --- ajout ---
 if (isset($_POST['nom_ingredient'])) {
     $nom = trim($_POST['nom_ingredient']);
-
+    //validation cote serveur
     if (empty($nom)) {
         $erreurs[] = "Le nom de l'ingrédient est obligatoire.";
     }
@@ -38,7 +40,9 @@ if (isset($_POST['nom_ingredient'])) {
             $erreurs[] = "Format d'image non autorisé (jpg, jpeg, png, webp).";
         }
     }
-
+//----------------------------
+//Insertion en bd
+//------------------------------
     if (empty($erreurs)) {
         // uploadImage() a deja deplace le fichier, on recupere juste le nom
         $image = uploadImage($_FILES['image_ingredient'], "../uploads/ingredients/");

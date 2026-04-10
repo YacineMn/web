@@ -25,6 +25,8 @@ $id_ingredient = isset($_GET['id_ingredient']) ? $_GET['id_ingredient'] : "";
 $id_tag        = isset($_GET['id_tag'])        ? $_GET['id_tag']        : "";
 
 /*
+Logique de recherche
+-------
 si au moins il existe un critère de recherche (titre,tag ou ingrédient ) on fait une recherche et on recupère le resultat de la recehrche dans $recette
 si c'est pas le cas on garde toujours toutes les recettes existante (non filtrés)
 */ 

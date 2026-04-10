@@ -5,7 +5,9 @@ require_once("../includes/db.php");
 require_once("../classes/Tag.php");
 
 requireAdmin();
-
+//----------
+//Initialisations
+//--------------
 $pdo    = getPDO();
 $tagObj = new Tag($pdo);
 

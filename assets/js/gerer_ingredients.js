@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function(){
 
-    /* ---- Aperçu photo avant envoi ---- */
+    /* ---- Aperçu photo avant envoi  ---- */
     var fileInput = document.getElementById("image_ingredient");
     var preview   = document.getElementById("preview-ingredient");
 

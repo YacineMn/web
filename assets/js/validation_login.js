@@ -9,6 +9,7 @@ Validation du formulaire de login (côté client) :
 
 Cette validation améliore l’expérience utilisateur, mais ne remplace pas la validation PHP côté serveur
 */
+// 
 
 document.addEventListener("DOMContentLoaded", function(){
 

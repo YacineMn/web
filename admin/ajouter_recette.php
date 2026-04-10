@@ -34,7 +34,9 @@ $ingredients = $ingredientObj->getAll();
 $tags        = $tagObj->getAll();
 
 $erreurs = [];
-
+//-----------------------
+//-------Validation php-------------
+//-------------------------------
 if (isset($_POST['titre'])) {
     $titre       = trim($_POST['titre']);
     $description = trim($_POST['description']);
@@ -67,7 +69,9 @@ if (isset($_POST['titre'])) {
             }
         }
     }
-
+    //----------------------------------------
+    //On verifie si ya pas d'erreurs pour inserer dans la base
+    //--------------------------------------
     if (empty($erreurs)) {
         // --- on upload la photo recette une seule fois ---
         // uploadImage() deplace le fichier temporaire vers uploads/recettes/
@@ -133,7 +137,7 @@ if (isset($_POST['titre'])) {
 
 <section class="admin-form">
     <h1>Ajouter une recette</h1>
-
+//Afficher les erreurs 
     <?php if (!empty($erreurs)): ?>
         <div class="erreurs">
             <?php foreach ($erreurs as $e): ?>
@@ -167,7 +171,7 @@ if (isset($_POST['titre'])) {
                         border-radius:8px; border:2px solid var(--beige);">
         </div>
 
-        <!-- INGRÉDIENTS EXISTANTS -->
+        <!-- INGRÉDIENTS EXISTANTS et creation des check boxes  -->
         <div class="form-group">
             <label>Ingrédients existants</label>
             <div class="filtre-wrap">
@@ -215,7 +219,7 @@ if (isset($_POST['titre'])) {
             </button>
         </div>
 
-        <!-- TAGS EXISTANTS -->
+        <!-- TAGS EXISTANTS et creation des chexck boxes pour tags -->
         <div class="form-group">
             <label>Tags existants</label>
             <div class="filtre-wrap">

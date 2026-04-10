@@ -21,16 +21,16 @@ document.addEventListener("DOMContentLoaded", function(){
     searchInput.addEventListener("keydown", function(e){
         if(e.key === "Enter") e.preventDefault();
     });
-
+    //Traitement de la recherche des recettes cote admin
     searchInput.addEventListener("input", function(){
         var q       = this.value.trim().toLowerCase();
         var visible = 0;
 
-        rows.forEach(function(row){
+        rows.forEach(function(row){//Pour chaque ligne du tableau
             // on cherche dans le titre ET la description
             var titre = row.dataset.titre || "";
             var desc  = row.dataset.desc  || "";
-            if(titre.includes(q) || desc.includes(q)){
+            if(titre.includes(q) || desc.includes(q)){//si dispo
                 row.style.display = "";
                 visible++;
             } else {

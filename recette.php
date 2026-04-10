@@ -20,7 +20,9 @@ si le fichier n'existe pas (recette ou ingrédient).
 */
 $pdo        = getPDO();
 $recetteObj = new Recette($pdo);
-
+//----
+//on recupere lid depuis lurl pour afficher recette et lavoir depuis bd
+//---
 $id = isset($_GET['id']) ? $_GET['id'] : "";
 if(empty($id)) die("ID manquant");
 

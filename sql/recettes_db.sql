@@ -56,7 +56,7 @@ INSERT INTO `ingredients` (`id`, `nom`, `image`) VALUES
 (28, 'oignons', '69d6b99b5685a.jpg'),
 (29, 'miel', '69d04c5760e85.jpg'),
 (30, 'poivrons', '69d0fafab3ff2.jpg'),
-(31, 'huile d\'olive', '69d0fafab4527.jpg'),
+(31, 'huile d\olive', '69d0fafab4527.jpg'),
 (35, 'ail', '69d6b2d7b8615.jpg'),
 (36, 'poivre noir', '69d6b2d7ba00c.jpg'),
 (37, 'pommes de terres', '69d6b2d7bb55a.jpg'),

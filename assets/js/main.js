@@ -1,4 +1,7 @@
 /*main.js — initialisation generale  */
+//-----------
+//Inutile 
+//-----------
 document.addEventListener("DOMContentLoaded", function(){
 
     
